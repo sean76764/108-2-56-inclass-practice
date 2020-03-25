@@ -55,3 +55,84 @@ my.108.total_credits <- 15
 my_age <- `我的年紀`
 ```
 
+```{r}
+ls()
+```
+
+##Automic vactor
+
+```{r}
+num1 <- 5
+vNum1 <- c(2,5)
+vNum2 <- c(2, num1)
+```
+#67行相當於 c(2,5)
+
+```{r}
+vNum1 <- c(-1,5)
+vNum2 <- c(2,3)
+vNum3 <- c(vNum1,vNum2)
+vNum4 <- c(-1,5,2,3)
+vNum5 <- c(c(-1,5),c(2,3))
+```
+```{r}
+vNum1 <- c(-1,5)
+vNum2 <- c(2,3)
+vNum4 <- c() # 空向量
+```
+```{r}
+vNum3 <- c(vNum2, vNum1)
+vNum4 <- c(vNum4, vNum1) # 向量疊代 （recursive vector concatenate）
+```
+##Different type
+```{r}
+num1<-5 # 非整數
+num2<-5L # 整數
+
+num1Vector<-c(5,6,7)
+num2Vector<-c(5L,6L,7L)
+```
+
+```{r}
+typeof(num1Vector)
+typeof(num2Vector)
+```
+```{r}
+char1<-"你好"
+char2<-'你好'
+```
+他說今天多了一個
+```{r}
+Hesaid <- "他說:"""
+```
+
+### Atomic
+```{r}
+complexVector <- c("小明今年歲數", "15")
+```
+
+```{r}
+library(httr)
+library(dplyr)
+GET("https://api.github.com/repos/tpemartin/108-2-56-inclass-practice/commits") %>%
+  content() %>%
+  View()
+```
+
+```{r}
+library(googlesheets4)
+`出席狀況表單網址` <- "https://docs.google.com/spreadsheets/d/1EAG49qDKPWWi0ebkVr29TLrvVnoBPfkvxYY-J3xLAHY/edit#gid=458686645"
+ss <- as_sheets_id(`出席狀況表單網址`)
+sheets_read(ss,sheet=1)
+```
+
+##logics
+```{r}
+logi1 <- c(T,TRUE,F,FALSE,FALSE)
+```
+```{r}
+# 加總向量內的所有元素值。
+sum(logi1)
+```
+
+
