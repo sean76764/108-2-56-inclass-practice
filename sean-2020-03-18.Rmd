@@ -221,8 +221,27 @@ with_tz(pgdatetime, tzone="UTC")
 ###注意
 ymd_hms(..., tz="Asia/Taipei")
 with_tz(..., tzone="Asia/Taipei")
+```{r}
+with_tz(TPEdatetime, tzone="Europe/Paris")
+with_tz(pgdatetime, tzone="Europe/Paris")
+```
 
+```{r}
+ymd_hms("2020-03-04T06:56:29Z")
+```
+##練習 ##1 2020-03-04T06:56:29Z	##2 2020-03-11 14:16:43	 ##3 2020-03-11 14:34:33
 
+```{r}
+studenttime <- c( ymd_hms("2020-03-04T06:56:29Z"),
+                  ymd_hms("2020-03-11 14:16:43", tz="Asia/Taipei"),
+                  ymd_hms("2020-03-11 14:34:33", tz="Asia/Taipei")
+)
+```
+```{r}
+studenttime
+```
+
+)
 ##list
 ```{r}
 
