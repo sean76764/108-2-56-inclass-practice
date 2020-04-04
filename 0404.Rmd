@@ -117,14 +117,14 @@ print(`小明108學年課表C`)
 library(lubridate)
 commit <- list(
   author=list(
-    "Martin老師",
-    "mtlin@gm.ntpu.edu.tw",
-    ymd_hms("2020-03-25T07:17:40Z")
+   name= "Martin老師",
+    eamil="mtlin@gm.ntpu.edu.tw",
+    time=ymd_hms("2020-03-25T07:17:40Z")
     ),
   commiter=list(
-    "emilyluckey",
-    "emily007@gmail.com",
-    ymd_hms("2020-03-26T08:18:40Z")
+    name="emilyluckey",
+    email="emily007@gmail.com",
+    time=ymd_hms("2020-03-26T08:18:40Z")
     ),
   message=c("update")
 )
@@ -132,6 +132,84 @@ commit <- list(
 ```{r}
 print(commit)
 ```
+```{r}
+library(jsonlite) 
+toJSON(commit)
+```
+##練習
 
+```{r}
+`小明修課`<- list(
+ `108-1`= list(
+  list(name="個體經濟學",
+    teacher="Alice",
+    grade=85),
+  list(
+    name="總體經濟學",
+    teacher="Mark",
+    grade=78)
+  ),
+ `108-2`= list(
+    name ="作業研究",
+    teacher="Jason",
+    grade=90
+ )
+)
+```
 
+```{r}
+print(`小明修課`)
+```
+###老師解答
+```{r}
+`小明的修課記錄` <- 
+  list(
+    name="小明",
+    semesters=
+      list(
+        `108-1`=
+          list(
+            year=108,
+            semester=1,
+            courses=
+              list(
+                list(
+                  name="個體經濟學",
+                  teacher="Alice",
+                  grade=85
+                ),
+                list(
+                  name="總體經濟學",
+                  teacher="Mark",
+                  grade=78
+                )
+              )
+            ),
+        `108-2`=
+          list(
+            year=108,
+            semester=2,
+            courses=
+              list(
+                list(
+                  name="作業研究",
+                  teacher="Jason",
+                  grade=90
+                )
+              )
+            )
+      ) 
+    )
+```
+```{r}
+print(`小明的修課記錄`)
+```
+
+##3.7
+```{r}
+save(`小明修課`,`小明108學年課表C`, file="today.Rda")
+```
+```{r}
+load("today.Rda")
+```
 
