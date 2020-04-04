@@ -1,0 +1,100 @@
+---
+title: '0401'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
+
+
+
+
+
+
+
+##Date time
+```{r}
+browseURL("https://docs.google.com/spreadsheets/d/1EAG49qDKPWWi0ebkVr29TLrvVnoBPfkvxYY-J3xLAHY/edit#gid=458686645")
+```
+```{r}
+library(lubridate)
+```
+台北 2020-03-18 13:52:40
+```{r}
+TPEdatetime <- ymd_hms(" 2020-03-18 13:52:40", tz="Asia/Taipei")
+TPEdatetime
+class(TPEdatetime)
+typeof(TPEdatetime)
+as.double(TPEdatetime)
+```
+
+葡萄牙 Mar.18, 2020, 05:52:40
+```{r}
+pgdatetime <- mdy_hms("Mar.18, 2020, 05:52:40", tz="Europe/Lisbon")
+pgdatetime
+class(pgdatetime)
+typeof(pgdatetime)
+as.double(TPEdatetime)
+as.double(pgdatetime)
+```
+```{r}
+with_tz(TPEdatetime, tzone="UTC")
+with_tz(pgdatetime, tzone="UTC")
+```
+###注意
+ymd_hms(..., tz="Asia/Taipei")
+with_tz(..., tzone="Asia/Taipei")
+```{r}
+with_tz(TPEdatetime, tzone="Europe/Paris")
+with_tz(pgdatetime, tzone="Europe/Paris")
+```
+
+```{r}
+ymd_hms("2020-03-04T06:56:29Z")
+```
+##練習 ##1 2020-03-04T06:56:29Z	##2 2020-03-11 14:16:43	 ##3 2020-03-11 14:34:33
+
+```{r}
+studenttime <- c( ymd_hms("2020-03-04T06:56:29Z"),
+                  ymd_hms("2020-03-11 14:16:43", tz="Asia/Taipei"),
+                  ymd_hms("2020-03-11 14:34:33", tz="Asia/Taipei")
+)
+```
+```{r}
+studenttime
+```
+```{r}
+with_tz(ymd_hms("2020-03-11 14:16:43", tz="Asia/Taipei"), tzone = "UTC")
+```
+```{r}
+class(TPEdatetime)
+typeof(TPEdatetime)
+
+as.numeric(TPEdatetime)
+as.numeric(pgdatetime)
+```

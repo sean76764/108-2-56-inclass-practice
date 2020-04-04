@@ -1,0 +1,137 @@
+---
+title: '0404'
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+###List
+```{r}
+vectorExamlple <- c(2, 6, 7)
+listExample <- list(2, 6, 7)
+
+print(vectorExamlple)
+print(listExample)
+```
+
+###每個元素值可以是不同type的物件值。
+```{r}
+#用vector儲存
+c("2020-03-31T13:40:55Z","一芳","2","水果茶")
+
+#用list儲存
+library(lubridate)
+`小明交易` <- list(ymd_hms("2020-03-31T13:40:55Z"), #datetime
+     "一芳",#charachter
+     2,#numeric
+     "水果茶"#character
+)
+```
+
+```{r}
+# 用vector
+  c(
+  c("108-1","高級會計學","高等統計學"),
+  c("108-2","食在拉丁美洲")
+)
+```
+
+```{r}
+# list含兩個vectors
+`小明108學年課表A` <- 
+  list(
+  c("108-1","高級會計學","高等統計學"),
+  c("108-2","食在拉丁美洲")
+)
+print(`小明108學年課表A`)
+```
+
+```{r}
+# list含兩個lists
+`小明108學年課表B` <- list(
+  list("108-1","高級會計學","高等統計學"),
+  list("108-2","食在拉丁美洲")
+)
+print(`小明108學年課表B`)
+```
+
+```{r}
+`小明108學年課表A`
+`小明108學年課表B`
+```
+
+```{r}
+# list含兩個lists, 子層list又各含兩個vectors
+`小明108學年課表C` <- list(
+  list(
+    c("108-1"), # 可只寫 "108-1"
+    c("高級會計學","高等統計學")
+       ),
+  list(
+    c("108-2"),
+    c("食在拉丁美洲")
+  )
+)
+print(`小明108學年課表C`)
+```
+
+##物件值可以取名
+```{r}
+# list含兩個lists, 子層list又各含兩個vectors
+`小明108學年課表C` <- list(
+  `上學期`=list(
+    semester=c("108-1"), 
+    courses=c("高級會計學","高等統計學")
+       ),
+  `下學期`=list(
+    semester=c("108-2"),
+    courses=c("食在拉丁美洲")
+  )
+)
+print(`小明108學年課表C`)
+```
+
+###Github commit
+```{r}
+library(lubridate)
+commit <- list(
+  author=list(
+    "Martin老師",
+    "mtlin@gm.ntpu.edu.tw",
+    ymd_hms("2020-03-25T07:17:40Z")
+    ),
+  commiter=list(
+    "emilyluckey",
+    "emily007@gmail.com",
+    ymd_hms("2020-03-26T08:18:40Z")
+    ),
+  message=c("update")
+)
+```
+```{r}
+print(commit)
+```
+
+
+
