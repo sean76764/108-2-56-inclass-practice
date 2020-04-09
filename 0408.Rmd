@@ -101,3 +101,39 @@ listExample[["學期"]] # 小心不是反頓點喔。
 listExample$`學期`
 ```
 
+
+```{r}
+fromJSON("http://data.ntpc.gov.tw/api/v1/rest/datastore/382000000A-000157-002",
+         simplifyDataFrame = F) -> newTaipeiCityVaccine
+```
+```{r}
+str(newTaipeiCityVaccine)
+length
+names(newTaipeiCityVaccine)
+```
+```{r}
+str(newTaipeiCityVaccine[[1]])
+str(newTaipeiCityVaccine$success)
+str(newTaipeiCityVaccine[["success"]])
+
+str(newTaipeiCityVaccine[[2]], max.level = 1)
+str(newTaipeiCityVaccine$result, max.level = 1)
+str(newTaipeiCityVaccine[["result"]], max.level = 1)
+```
+
+###選多個元素
+#用位置選[c(...)]
+```{r}
+vectorExample
+vectorExample[c(1,3)]
+vectorExample[c(3,2,1)] # 產生重新排列效果
+```
+
+```{r}
+# 顯示到第一層
+str(listExample, max.level=1)
+
+listExample[c(1,2)]
+```
+
+
