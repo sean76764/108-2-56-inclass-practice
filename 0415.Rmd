@@ -97,6 +97,69 @@ listExample[["學期"]]$`108-1`[[1]]$teacher
 ###get2取出
 
 ```{r}
+get2 <- listExample["學期"]
+get2layer1 <- get2[[1]]
+get2layer2 <- get2layer1[["108-1"]]
+get2layer3 <- get2layer2[[1]]
+get2layer3$teacher
+```
+##也就是
+```{r}
+listExample["學期"][[1]][["108-1"]][[1]]$teacher
+```
 
+
+
+
+
+
+
+
+
+###list 應用
+
+```{r}
+vector1 <- c(a=1,b=3,c=4)
+vector1[["a"]]
+vector1[c("a","c")]
+vector1$a ###錯誤的
+
+list1 <- c(a=1,b=3,c=4)
+list1[["a"]]
+list1[c("a","c")]
+list1$a
+
+```
+
+```{r}
+today <- list(
+  list("台北市",c(highest_temp = 25),c(lowest_temp = 18)),
+  list("新北市",c(highest_temp = 24),c(lowest_temp = 15)))
+str(today)
+```
+##取出25度
+```{r}
+today[[1]][[2]]
+```
+```{r}
+today <- list(
+  list("台北市",highest_temp =c(highest_temp = 25),lowest_temp =c(lowest_temp = 18)),
+  list("新北市",highest_temp =c(highest_temp = 24),lowest_temp =c(lowest_temp = 15)))
+```
+##選出25
+```{r}
+today[[1]]$highest_temp  ##顯示出的highest_print來自atomic vector裡的highest_print
+```
+
+
+```{r}
+
+tomorrow <- list(
+  list("台北市",c(highest_temp = 25),c(lowest_temp = 18)),
+  list("新北市",c(highest_temp = 24),c(lowest_temp = 15)))
+
+weather <- list(today,tomorrow)
+
+print(weather)
 ```
 
