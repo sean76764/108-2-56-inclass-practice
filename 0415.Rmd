@@ -1,0 +1,102 @@
+---
+title: '0415'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
+在前面討論使用$及[ ]取一個元素時我們創造了get1與get2兩個物件，請分別由get1, get2取出108-1學期個體經濟學教師姓名。
+```{r}
+listExample <- 
+  list(
+    student="小明",
+    `學期`=list(
+      `108-1`=list(
+        list(
+          name="個體經濟學",
+          teacher="Alice",
+          grade=85
+        )
+      ),
+      `108-2`=list(
+        list(
+          name="總體經濟學",
+          teacher="Mark",
+          grade=78
+        )
+      )
+    )
+  )
+```
+
+```{r}
+str(listExample)
+```
+```{r}
+listExample[[1]]
+listExample[[2]]
+```
+```{r}
+get1 <- listExample[["學期"]] #拿出來
+get3 <- listExample$`學期` #拿出來
+
+get2 <- listExample["學期"] #只留下
+
+str(get1)
+```
+
+###get1取出
+```{r}
+get1layer1 <- get1$`108-1`
+str(get1layer1)
+```
+```{r}
+get1layer2 <- get1layer1[[1]]
+str(get1layer2)
+```
+
+
+```{r}
+get1layer2$teacher
+```
+```{r}
+get1 <- listExample[["學期"]] #拿出來
+get1layer1 <- get1$`108-1`
+get1layer2 <- get1layer1[[1]]
+get1layer2$teacher
+```
+##也就是
+```{r}
+listExample[["學期"]]$`108-1`[[1]]$teacher
+```
+###get2取出
+
+```{r}
+
+```
+

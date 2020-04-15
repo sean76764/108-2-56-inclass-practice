@@ -53,6 +53,7 @@ typeof(TPEdatetime)
 as.double(TPEdatetime)
 ```
 
+
 葡萄牙 Mar.18, 2020, 05:52:40
 ```{r}
 pgdatetime <- mdy_hms("Mar.18, 2020, 05:52:40", tz="Europe/Lisbon")
@@ -62,6 +63,17 @@ typeof(pgdatetime)
 as.double(TPEdatetime)
 as.double(pgdatetime)
 ```
+###來自相同時區、相同輸入方式的時間文字字串，可以直接套入相同函數轉成Date/Time類別。
+```{r}
+tpeTime <- c("2020-03-18 13:52:40",
+             "2020-03-11 03:12:40")
+tpeTime <- 
+  ymd_hms(
+    tpeTime, # 呼叫tpeTime向量值
+    tz="Asia/Taipei"
+    )
+```
+
 ```{r}
 with_tz(TPEdatetime, tzone="UTC")
 with_tz(pgdatetime, tzone="UTC")
@@ -108,5 +120,9 @@ tpeTime <-
     tz="Asia/Taipei"
     )
 tpeTime
+```
+
+```{r}
+source("https://www.dropbox.com/s/mk7bxvu6a3lxf79/studentEnvironmentReport.R?dl=1",print.eval = T)
 ```
 

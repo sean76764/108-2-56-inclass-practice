@@ -44,7 +44,7 @@ library(lubridate); library(jsonlite); library(readr)
 install.packages("lubridate")
 ```
 
-### 2.2 ##未完成
+### 2.2 
 執行以下程式可以分別得到兩個時間：
 ```{r data22}
 taiwan_time <- "西元2019年4月12日 12點55分30秒"
@@ -53,21 +53,22 @@ oslo_time <- "18.11.2018 15:33:02"
 
 其中taiwan_time為台灣時間，oslo_time為挪威Oslo時間。請將兩個時間存在一個atomic vector叫two_times的物件裡，且為Date/Time class（即POSIXct POSIXt class）。
 
+
 ```{r ans22}
-two_times <- c(taiwan_time,oslo_time)
-taiwan_time <- ymd_hms("西元2019年4月12日 12點55分30秒", tz="Asia/Taipei")
-oslo_time <- dmy_hms("18.11.2018 15:33:02", tz="Europe/Oslo")
+library(lubridate)
+taiwantime <- ymd_hms(taiwan_time, tz="Asia/Taipei")
+oslotime <- dmy_hms(oslo_time, tz="Europe/Oslo")
+two_times <- c(taiwantime, oslotime)
 class(two_times)
 two_times
 ```
 
 
-### 2.3##未完成
+### 2.3
 將two_times改成美國Chicago時間顯示的two_times_chicago：
 
 ```{r ans23}
-two_times_chicago <- c(with_tz(taiwan_time, tzone = "America/Chicago"), with_tz(oslo_time, tzone = "America/Chicago"))
-
+two_times_chicago <- with_tz(two_times, tzone = "America/Chicago")
 two_times_chicago
 ```
 
@@ -209,16 +210,18 @@ source("https://www.dropbox.com/s/xtge2ghfb7dhple/108-2-hw1-4.R?dl=1")
 
 ```{r ans5c, eval=F}
 yy <- 2020
-mm <- `Mar.`
+mm <- 03
 dd <- 15
 event_list <- list(
-  time=ymd(paste0(yy,",",mm,dd)),
+  time=lubridate::ymd(paste(yy,mm,dd)),
   list(
     name="小明",
-    `是否完成`=True,
-    完成所花時間(秒)=350,
+    `是否完成`= T,
+    `完成所花時間(秒)`=350,
     tools=c(
       "anchor","axe")
-)
+      
+))
+
 ```
 

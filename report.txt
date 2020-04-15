@@ -1,0 +1,124 @@
+ALLUSERSPROFILE               C:\ProgramData
+APPDATA                       C:\Users\user\AppData\Roaming
+CLICOLOR_FORCE                1
+CommonProgramFiles            C:\Program Files\Common Files
+CommonProgramFiles(x86)       C:\Program Files (x86)\Common Files
+CommonProgramW6432            C:\Program Files\Common Files
+COMPUTERNAME                  DESKTOP-EIC3TJT
+ComSpec                       C:\WINDOWS\system32\cmd.exe
+DISPLAY                       :0
+DriverData                    C:\Windows\System32\Drivers\DriverData
+FPS_BROWSER_APP_PROFILE_STRING
+                              Internet Explorer
+FPS_BROWSER_USER_PROFILE_STRING
+                              Default
+GFORTRAN_STDERR_UNIT          -1
+GFORTRAN_STDOUT_UNIT          -1
+HOME                          C:\Users\user\Documents
+HOMEDRIVE                     C:
+HOMEPATH                      \Users\user
+LOCALAPPDATA                  C:\Users\user\AppData\Local
+LOGONSERVER                   \\DESKTOP-EIC3TJT
+MPLENGINE                     tkAgg
+MSYS2_ENV_CONV_EXCL           R_ARCH
+NUMBER_OF_PROCESSORS          4
+OneDrive                      C:\Users\user\OneDrive
+OneDriveConsumer              C:\Users\user\OneDrive
+OS                            Windows_NT
+PATH                          C:\Program Files\R\R-3.6.2\bin\x64;C:\Program Files
+                              (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS
+                              Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program
+                              Files (x86)\Intel\Intel(R) Management Engine
+                              Components\DAL;C:\Program Files\Intel\Intel(R) Management
+                              Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R)
+                              Management Engine Components\IPT;C:\Program
+                              Files\Intel\Intel(R) Management Engine
+                              Components\IPT;C:\Program Files (x86)\NVIDIA
+                              Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program
+                              Files\nodejs\;C:\Program Files\Git\cmd;C:\Program
+                              Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program
+                              Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program
+                              Files\dotnet\;C:\Program Files\Microsoft SQL
+                              Server\130\Tools\Binn\;C:\Program
+                              Files\Intel\WiFi\bin\;C:\Program Files\Common
+                              Files\Intel\WirelessCommon\;C:\Users\user\AppData\Local\Microsoft\WindowsApps;C:\Users\user\AppData\Roaming\npm;C:\Users\user\AppData\Local\GitHubDesktop\bin
+PATHEXT                       .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+PROCESSOR_ARCHITECTURE        AMD64
+PROCESSOR_IDENTIFIER          Intel64 Family 6 Model 142 Stepping 9, GenuineIntel
+PROCESSOR_LEVEL               6
+PROCESSOR_REVISION            8e09
+ProgramData                   C:\ProgramData
+ProgramFiles                  C:\Program Files
+ProgramFiles(x86)             C:\Program Files (x86)
+ProgramW6432                  C:\Program Files
+PSModulePath                  C:\Program
+                              Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+PUBLIC                        C:\Users\Public
+QT_D3DCREATE_MULTITHREADED    1
+R_ARCH                        /x64
+R_COMPILED_BY                 gcc 4.9.3
+R_DOC_DIR                     C:/PROGRA~1/R/R-36~1.2/doc
+R_HOME                        C:/PROGRA~1/R/R-36~1.2
+R_LIBS_USER                   C:/Users/user/Documents/R/win-library/3.6
+R_USER                        C:/Users/user/Documents
+RMARKDOWN_MATHJAX_PATH        C:/Program Files/RStudio/resources/mathjax-26
+RS_LOCAL_PEER                 \\.\pipe\19367-rsession
+RS_RPOSTBACK_PATH             C:/Program Files/RStudio/bin/rpostback
+RS_SHARED_SECRET              63341846741
+RSTUDIO                       1
+RSTUDIO_CONSOLE_COLOR         256
+RSTUDIO_CONSOLE_WIDTH         80
+RSTUDIO_MSYS_SSH              C:/Program Files/RStudio/bin/msys-ssh-1000-18
+RSTUDIO_PANDOC                C:/Program Files/RStudio/bin/pandoc
+RSTUDIO_SESSION_PORT          19367
+RSTUDIO_USER_IDENTITY         user
+RSTUDIO_WINUTILS              C:/Program Files/RStudio/bin/winutils
+SESSIONNAME                   Console
+SystemDrive                   C:
+SystemRoot                    C:\WINDOWS
+TEMP                          C:\Users\user\AppData\Local\Temp
+TERM                          xterm-256color
+TMP                           C:\Users\user\AppData\Local\Temp
+USERDOMAIN                    DESKTOP-EIC3TJT
+USERDOMAIN_ROAMINGPROFILE     DESKTOP-EIC3TJT
+USERNAME                      user
+USERPROFILE                   C:\Users\user
+VS110COMNTOOLS                C:\Program Files (x86)\Microsoft Visual Studio
+                              11.0\Common7\Tools\
+VS120COMNTOOLS                C:\Program Files (x86)\Microsoft Visual Studio
+                              12.0\Common7\Tools\
+windir                        C:\WINDOWS
+[1] "LC_COLLATE=Chinese (Traditional)_Taiwan.950;LC_CTYPE=Chinese (Traditional)_Taiwan.950;LC_MONETARY=Chinese (Traditional)_Taiwan.950;LC_NUMERIC=C;LC_TIME=Chinese (Traditional)_Taiwan.950"
+<locale>
+Numbers:  123,456.78
+Formats:  %AD / %AT
+Timezone: UTC
+Encoding: UTF-8
+<date_names>
+Days:   Sunday (Sun), Monday (Mon), Tuesday (Tue), Wednesday (Wed), Thursday (Thu), Friday (Fri),
+        Saturday (Sat)
+Months: January (Jan), February (Feb), March (Mar), April (Apr), May (May), June (Jun), July
+        (Jul), August (Aug), September (Sep), October (Oct), November (Nov), December
+        (Dec)
+AM/PM:  AM/PM
+R version 3.6.2 (2019-12-12)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 18362)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=Chinese (Traditional)_Taiwan.950  LC_CTYPE=Chinese (Traditional)_Taiwan.950   
+[3] LC_MONETARY=Chinese (Traditional)_Taiwan.950 LC_NUMERIC=C                                
+[5] LC_TIME=Chinese (Traditional)_Taiwan.950    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] readr_1.3.1
+
+loaded via a namespace (and not attached):
+ [1] compiler_3.6.2  R6_2.4.1        hms_0.5.3       tools_3.6.2     pillar_1.4.3    rstudioapi_0.11
+ [7] tibble_2.1.3    Rcpp_1.0.3      crayon_1.3.4    vctrs_0.2.4     knitr_1.28      xfun_0.12      
+[13] pkgconfig_2.0.3 rlang_0.4.5    
