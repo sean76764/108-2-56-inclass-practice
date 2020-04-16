@@ -163,3 +163,107 @@ weather <- list(today,tomorrow)
 print(weather)
 ```
 
+##4.2 新增/替換/刪除元素
+元素提取[.],[[.]],$.也可用來進行元素「值」的修改與新增
+```{r}
+##範例
+
+a <- c("1","b","TRUE")
+a
+a[[2]] <- "c" # 元素存在: 替換
+a[[4]] <- "7" # 元素不存在： 增加
+a[c(5,6)] <- c("J", "K")
+a
+```
+```{r}
+a[[7]] <- "jonson"
+a
+###使用前一章的向量疊代(recursive vector concatenate)法，新增一個“Mary”。
+a <- c(a, c("mary"))
+```
+
+
+```{r}
+library(lubridate)
+list1 <- 
+  list(
+    list(
+      name="Jack",
+      birthday=ymd("1998-03-21"),
+      status=c(height=177, weight=80)
+    )
+  )
+
+str(list1)
+```
+```{r}
+# 更改日期
+list1[[1]]$birthday <- ymd("1997-03-21")
+
+# 新增資料
+list1[[2]] <- list(
+  name="Mary",
+  birthday=ymd("1998-08-24")
+)
+
+str(list1)
+```
+```{r}
+#替Mary依Jack的記錄方式增加身高163，體重45。
+list1[[2]]$status <- c(height=163, weight=45)
+#將Jack的身高改成176。
+list1[[1]]$status[["height"]] <- 176
+str(list1)
+```
+#使用[.] <-
+
+由於[.]會保留母層結構，所以<-右側要使用和母層相同的型態設定：
+
+母層若為list，則需用list(...)方式增加。
+
+母層若為atomic vector，則用c(...)方式增加
+
+```{r}
+list1[[1]][["age"]] <- 21
+list1[[2]]["age"] <- list(21)
+
+# 改變「一個」時，使用[[ ]]比較不會錯。
+str(list1)
+```
+```{r}
+list1[[1]][c("bloodType","registered")] <- list("AB",TRUE)
+
+str(list1)
+```
+##練習
+```{r}
+listExample <- 
+  list(
+    student="小明",
+    `學期`=list(
+      `108-1`=list(
+        list(
+          name="個體經濟學",
+          teacher="Alice",
+          grade=85
+        )
+      ),
+      `108-2`=list(
+        list(
+          name="總體經濟學",
+          teacher="Mark",
+          grade=78
+        )
+      )
+    )
+  )
+str(listExample)
+```
+```{r}
+#108-1新增一個“產業經濟學”。
+listExample[[2]][["108-1"]][[2]] <-list(name= "產業經濟學")
+#產業經濟學，同時加上教師Wen及成績88。
+listExample[[2]][["108-1"]][[2]][c("teacher", "grade")] <- list("wen",88)
+str(listExample)
+```
+
