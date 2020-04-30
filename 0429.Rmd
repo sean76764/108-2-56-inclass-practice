@@ -94,3 +94,169 @@ paste0(
 )
 ```
 
+#4.4 Relational Operators
+```{r}
+example <- list(
+  name=c("小明","小花","小新","美美"),
+  height=c(175,166,170,160),
+  weight=c(77,NA,60,43),
+  birthday=lubridate::ymd(c("1998-03-11","1999-12-22","1995-08-22","2001-10-10")),
+  hobby=c("美食 旅遊","旅遊 時尚","3C 美食","音樂 旅遊"),
+  residence=c("Taipei","New Taipei","Taichung","Kaohsiung"),
+  allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
+  bloodType=c("A","B","B","O")
+)
+```
+
+#4.4.1 比較
+>,<,<=,>=: 分別為大於、小於、小於等於、大於等於
+#數字比較
+
+#時間比較
+
+#可排序類別資料比較
+
+#####數字比較example裡誰的身高大於等於170
+```{r}
+str(example[c("name","height")])
+
+pick_above170 <- example$height >= 170
+example$name[pick_above170]
+class(pick_above170)
+```
+#不同屆入學學生在2年級的學業表現
+```{r}
+source("https://www.dropbox.com/s/qsrw069n94k61lj/transcript100to103_list.R?dl=1")
+```
+
+```{r}
+str(transcript100to103)
+```
+```{r}
+# 各學屆2年級人數
+table(transcript100to103$學屆)
+# 各學屆2年級成績大於85人數
+table(transcript100to103$學屆[pick_above85])
+```
+###選成績大於85分
+```{r}
+# 只要成績大於85的
+pick_above85 <-
+  transcript100to103$`成績` > 85
+```
+
+```{r}
+# 各學屆2年級人數
+table(transcript100to103$學屆)
+# 各學屆2年級成績大於85人數
+table(transcript100to103$學屆[pick_above85])
+```
+
+###時間比較:
+```{r}
+example$birthday
+class(example$birthday)
+typeof(example$birthday)
+```
+
+```{r}
+###example裡誰1998年(含)以後出生
+
+print(example[c("name","birthday")])
+
+pick_after98 <- example$birthday >= lubridate::ymd("1998-01-01")
+example$name[pick_after98]
+```
+###美元匯率
+```{r}
+source("https://www.dropbox.com/s/16h6ggua6qtydci/exchangeRate.R?dl=1")
+```
+```{r}
+str(exchangeRate)
+```
+#選1998年1月(含)以後的匯率
+```{r}
+# 只要1998年1月（含）以後的
+library(lubridate)
+pick_after98_01 <-
+exchangeRate$`期間` >= ymd("1998-01-01")
+
+```
+#選出1998年1月(含)以後的匯率資料
+
+```{r}
+exchangeRate_after98 <-
+  list(
+    `期間`=exchangeRate$`期間`[pick_after98_01],
+    `幣別`=exchangeRate$`幣別`[pick_after98_01],
+    `匯率`=exchangeRate$`匯率`[pick_after98_01]
+  )
+```
+
+###可排序###類別資料比較:example裡誰零用錢大於1000:
+```{r}
+print(example[c("name","allowance")])
+
+pick_allowanceOver1000 <- example$allowance >= "1001-2000"
+example$name[pick_allowanceOver1000]
+```
+#factor資料可進一步分成可排序，與不可排序的，如：
+* 可排序： 以年齡層區分的類別，以所得級距區分的類別等。
+* 不排序： 性別，學系等。
+factor的設定在不調整時內定為不可排序資料，如要改成可排序類別資料，以先前已處理好的example$allowance 為例：
+
+```{r}
+##變成可排序(order排序是自己要的)
+example$allowance <- 
+  ordered(example$allowance)
+```
+#或在設定為factor時即把levels排好，並ordered=T:
+
+```{r}
+example$allowance <-
+  factor(
+    example$allowance,
+    levels=c("0-1000", "1001-2000", "2000+"),##排序
+    ordered = T # 設定為可排序factor
+  )
+```
+```{r}
+pick_allowanceOver1000 <- example$allowance >= "1001-2000"
+example$name[pick_allowanceOver1000]
+```
+#刑事案件被害者人數
+
+```{r}
+jsonlite::fromJSON("https://www.dropbox.com/s/3uijub7xheib405/list_victimAges_female.json?dl=1", simplifyDataFrame = F) -> list_victimAges_female
+```
+
+```{r}
+#請將list_victimAges_female各元素的class做合理設定
+list_victimAges_female$`數目` <-
+  as.integer(list_victimAges_female$`數目`)
+list_victimAges_female$`年齡層` <- 
+  as.factor(list_victimAges_female$`年齡層`)
+
+```
+```{r}
+levels(list_victimAges_female$`年齡層`) -> levels_ages
+print(levels_ages)
+```
+#將levels順序改成: 不詳，總計，0_5歲，12_17歲，…，70歲以上。
+```{r}
+levels_new <- c(levels_ages[c(12,13,1,8,2:7,9:11)])
+levels(list_victimAges_female$`年齡層`) <- levels_new
+```
+
+#選出「30_39歲以上受害者」的數目
+#####################
+```{r}
+pick_above30 <- list_victimAges_female$`年齡層` >= "30_39歲"
+View(list_victimAges_female$`年齡層`)
+```
+
+```{r}
+sum(list_victimAges_female$`數目`, na.rm=T)
+sum(list_victimAges_female$`數目`[pick_above30], na.rm = T)
+```
+
