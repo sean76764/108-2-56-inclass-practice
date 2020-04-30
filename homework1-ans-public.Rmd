@@ -2,8 +2,8 @@
 title: "homework 1"
 output: html_document
 params:
-  studentName: "張為翔" 
-  studentID: "ˋ410682028"
+  studentName: "你的名字"
+  studentID: "你的學號"
 ---
 
 # 注意事項
@@ -44,34 +44,35 @@ library(lubridate); library(jsonlite); library(readr)
 install.packages("lubridate")
 ```
 
-### 2.2 
+
+### 2.2
 執行以下程式可以分別得到兩個時間：
 ```{r data22}
-taiwan_time <- "西元2019年4月12日 12點55分30秒"
+taiwan_time <- "2019-04-12 12:55:30"
 oslo_time <- "18.11.2018 15:33:02"
-class(oslo_time)
 ```
+
 
 其中taiwan_time為台灣時間，oslo_time為挪威Oslo時間。請將兩個時間存在一個atomic vector叫two_times的物件裡，且為Date/Time class（即POSIXct POSIXt class）。
 
-
 ```{r ans22}
-library(lubridate)
-taiwantime <- ymd_hms(taiwan_time, tz="Asia/Taipei")
-oslotime <- dmy_hms(oslo_time, tz="Europe/Oslo")
-two_times <- c(taiwantime, oslotime)
-class(two_times)
-two_times
+two_times <- c(
+  ymd_hms(taiwan_time, tz="Asia/Taipei"), 
+  dmy_hms(oslo_time, tz="Europe/Oslo"))
+# two_times
 ```
+
 
 
 ### 2.3
 將two_times改成美國Chicago時間顯示的two_times_chicago：
 
 ```{r ans23}
-two_times_chicago <- with_tz(two_times, tzone = "America/Chicago")
-two_times_chicago
+two_times_chicago <- with_tz(two_times, tzone="America/Chicago")
+# two_times_chicago
 ```
+
+
 
 ## 3 List
 
@@ -80,7 +81,7 @@ two_times_chicago
 ```
 List of 2
  $ approve: logi TRUE
- $ course_info :List of 4
+ $ course :List of 4
   ..$ coursename: chr "會計學"
   ..$ type      : chr "必"
   ..$ credits   : num 3
@@ -94,26 +95,27 @@ List of 2
 其中approve（核準狀況，logics class），course_info(課程資訊), coursename(課名), type（類別，必/選/通）, credits（學分數, numeric class）, time_place（上課時地）, weekday（星期）, time_slots（節次, numeric class）, classroom（教室）的意思如（）內容所示。
 
 ```{r ans31}
-list(
-  approve=TRUE,
-  course_info=list(
-    coursenam="會計學",
-    type="必",
-    credits=3,
-    time_place=list(
-      list(
-        weekday="星期三",
-        time_slots=c(7,8,9),
-        classroom="商2F05"
-      )
+course1 <- list(
+  coursename="會計學",
+  type="必",
+  credits=3,
+  time_place = list(
+    list(
+    weekday="星期三",
+    time_slots=c(7,8,9),
+    classroom="商2F05"
     )
-    
   )
-) ->course
+)
 
-str(course)
-course
+course <- list(
+approve=TRUE,
+course_info=course1
+)
+# course
 ```
+
+
 
 ### 3.2
 依上題架構，若該課的上課時間分兩個時間，地點不變：
@@ -124,30 +126,33 @@ course
 你要怎麼修改你的course物件內容讓裡頭的time_slots可以有兩個時段及地點，答案物件為courseUpdate。courseUpdate內容只有time_place與course不同，其餘元素值維持與course相同內容。
 
 ```{r ans32}
-list(
-  approve=TRUE,
-  course_info=list(
-    coursenam="會計學",
-    type="必",
-    credits=3,
-    time_place=list(
-      list(
-        weekday="星期三",
-        time_slots=c(7,8,9),
-        classroom="商2F05"
-      ),
-      list(
-        weekday="星期二",
-        time_slots=5,
-        classroom="商2F05"
-      )
+course1 <- list(
+  coursename="會計學",
+  type="必",
+  credits=3,
+  time_place = list(
+    list(
+    weekday="星期三",
+    time_slots=c(7,8),
+    classroom="商2F05"
+    ),
+    list(
+    weekday="星期二",
+    time_slots=c(5),
+    classroom="商2F05"
     )
-    
   )
-) ->courseUpdate
-str(courseUpdate)
-courseUpdate
+)
+
+courseUpdate <- list(
+approve=TRUE,
+course_info=course1
+)
+
+# courseUpdate
 ```
+
+
 
 ### 3.3
 連到以下政府資料開放平台，每月新北市A1類道路交通事故－原因及傷亡：
@@ -174,16 +179,21 @@ List of 2
 
 可用str(accidents)來檢查你的答案是否有符合格式。
 ```{r ans33}
-library(lubridate)
-banqiao <- list(type="駕駛人過失-其他",casualties=1)
-haishan <- list(type="駕駛人過失-搶越行人穿越道", casualties=1)
-bureaudata <- list(`板橋分局`=banqiao, `海山分局`=haishan)
-time <- "2014-01-01"
-timedata <- ymd(time)
-accidents <- list(time=timedata,bureaus=bureaudata)
-str(accidents)
-
-accidents
+accidents <-
+  list(
+    time=lubridate::ymd("2014-01-01"),
+    bureaus = list(
+      `板橋分局`=list(
+          type="駕駛人過失-其他",
+          casualties=1
+          ),
+      `海山分局`=list(
+          type="駕駛人過失-搶越行人穿越道",
+          casualties=1
+          )
+      )
+    )
+# accidents
 ```
 
 
@@ -192,46 +202,56 @@ accidents
 
 小明的果汁店每位客人會買的果汁落在1-10杯間，因為每次發票上的數字只在1-10這10類重複出現，所以小明認定它是類別資料而用factor class來存下一天的所有銷售。以下程式執行後會隨機抽出小明輸入的5筆訂單果汁杯數，並存在fiveReceipts這個factor物件裡。
 
-```{r data4}
+```{r data41}
 source("https://www.dropbox.com/s/bvs0m4oxw7yaqxw/108-2-hw1-3.R?dl=1")
 fiveReceipts <- .randomReceipts(n=5)
 ```
+
 
 ### 4.1
 用levels()函數來顯示fiveReceipts有那幾個levels，並把回傳的結果值存在levels_fiveReceipts. 
 
 ```{r ans41}
 levels_fiveReceipts <- levels(fiveReceipts)
-fiveReceipts
-levels_fiveReceipts
+# levels_fiveReceipts
 ```
+
+
+
 ### 4.2
 使用as.integer()函數來顯示fiveReceipts在電腦的存法，並把回傳的結果值存在storage_fiveReceipts. 
 ```{r ans42}
-storage_fiveReceipts<- as.integer(fiveReceipts)
-storage_fiveReceipts
+storage_fiveReceipts <- as.integer(fiveReceipts)
+# storage_fiveReceipts
 ```
 
 ### 4.3
 使用as.character()函數將fiveReceipts在螢幕顯示的表面值改成字串，並把回傳的結果值存在chr_fiveReceipts.
 ```{r ans43}
-chr_fiveReceipts<- as.character(fiveReceipts)
-chr_fiveReceipts
+chr_fiveReceipts <- as.character(fiveReceipts)
+# chr_fiveReceipts
 ```
+
 ### 4.4
 若我們想要把fiveReceipts的螢幕顯示值用sum()函數加總，在只使用as.{class name}函數下，要怎麼做？把sum完的結果存在sum_fiveReceipts。
 ```{r ans44}
-sum_fiveReceipts<-sum(as.integer(as.character(fiveReceipts)))
-sum_fiveReceipts
+sum_fiveReceipts <- sum(
+  as.integer(
+    as.character(fiveReceipts)
+  )
+)
+# sum_fiveReceipts
 ```
+
 
 ## 5
 請先執行以下程式： 
 ```{r data5}
 # 啟動一個乾淨空的R環境
-source("https://www.dropbox.com/s/xtge2ghfb7dhple/108-2-hw1-4.R?dl=1") 
+# source("https://www.dropbox.com/s/xtge2ghfb7dhple/108-2-hw1-4.R?dl=1") 
 # 除了Global environment會清空，之前引入的套件也會被移除
 ```
+
 
 接著修正以下程式的錯誤，修正時請注意：
 
@@ -240,18 +260,17 @@ source("https://www.dropbox.com/s/xtge2ghfb7dhple/108-2-hw1-4.R?dl=1")
 
 ```{r ans5c, eval=F}
 yy <- 2020
-mm <- "Mar."
+mm <- `Mar.`
 dd <- 15
 event_list <- list(
-  time=lubridate::ymd(paste(yy,mm,dd)),
+  time=ymd(paste0(yy,",",mm,dd)),
   list(
     name="小明",
-    `是否完成`= T,
-    `完成所花時間(秒)`=350,
+    `是否完成`=True,
+    完成所花時間(秒)=350,
     tools=c(
       "anchor","axe")
-      
-))
-str(event_list)
+)
 ```
+
 

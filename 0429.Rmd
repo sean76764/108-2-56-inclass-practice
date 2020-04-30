@@ -1,0 +1,96 @@
+---
+title: "0429"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+##On numeric class
+```{r}
+a <- c(2, 3, 5)
+b <- c(4,-1, 3)
+```
+```{r}
+a+b
+a-b
+a*b
+a/b
+```
+##餘數：%%
+##次方：** 或 ^
+```{r}
+a %% b
+#相當於
+c(2%%4,3%%-1,5%%3)
+a ** b
+```
+#奇、偶數判斷
+```{r}
+sequenceNums <- c(11, 6, 8, 11, 12, 11, 3, 7, 10, 8)
+print(sequenceNums)
+
+sequenceNums %% 2 # 餘數為1則是奇數，0則是偶數
+```
+#當向量間不等長度時，R則對短的向量進行Recycle的動作（即Python的Broadcast）:
+#將其中較短的向量反複堆疊到可以長得跟最長的向量一樣長度。
+```{r}
+5*c(1,3,4)+7
+# 其實是
+c(5)*c(1,3,4)+c(7)
+
+## 對向量5，向量7進行recycle:
+c(5,5,5)*c(1,3,4)+c(7,7,7)
+## Recycle等長後才進行elementwise operation:
+c(5*1+7, 5*3+7, 5*4+7)
+```
+```{r}
+#狀況一: 堆疊一定倍數剛好一樣長
+c(2,3)/c(-2,-13,10,22)
+c(2,3,2,3)/c(-2,-13,10,22)
+```
+```{r}
+#狀況二: 倍數堆疊一定會超過，只好截斷
+c(2,3)/c(-2,-13,10)
+c(2,3,2)/c(-2,-13,10)
+```
+#Recycling不只用在數值class, 只要向量間的處理要等長度才合理時，recycling通常也會用在其他的class。
+```{r}
+paste0(
+  c("我叫"), c("小明","小美")
+)
+
+#相當於
+paste0(
+  c("我叫","我叫"), c("小明","小美")
+)
+```
+
+```{r}
+paste0(
+  c("他叫","我叫"), c("小明","小美","大雄")
+)
+```
+

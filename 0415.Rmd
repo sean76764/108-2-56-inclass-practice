@@ -66,8 +66,8 @@ get1 <- listExample[["學期"]] #拿出來
 get3 <- listExample$`學期` #拿出來
 
 get2 <- listExample["學期"] #只留下
-
 str(get1)
+str(get2)
 ```
 
 ###get1取出

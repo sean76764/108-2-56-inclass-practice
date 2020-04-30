@@ -36,7 +36,8 @@ pi <- c(3,1,4,1,5,9,2,6,5,3,5)
 
 請取出pi的第8個數字並儲存到叫做gift的物件。
 ```{r ans1}
-# gift
+pi[[8]] -> gift
+gift
 ```
 
 ## 2 「延續題」接續上次的作業內容
@@ -48,7 +49,8 @@ fromJSON("https://www.dropbox.com/s/uday7x99k9q9sxm/course.json?dl=1", simplifyD
 ### 2.1 特定物件取出
 請取出course中time_place的資料儲存到叫做time_place的list物件。
 ```{r ans21}
-# time_place
+course[[2]][[4]] -> time_place
+time_place
 ```
 
 ### 2.2 特定物件改寫
@@ -65,13 +67,18 @@ fromJSON("https://www.dropbox.com/s/uday7x99k9q9sxm/course.json?dl=1", simplifyD
 提示:
 只有type不一樣，其他內容都和course一樣喔!至於approve正確的class是甚麼請查看其內容自行判斷。
 ```{r ans22}
-# course_update
+course[[2]]$type <- "選"
+course$approve <- TRUE
+course_update <- course
+course_update
 ```
 
 ### 2.3 新增特定物件
 系辦決定在修課資料加上授課教師的名字，請在course_update的course資料中新增teacher欄位，授課教師是紀學檜老師，把改完的結果存到course_update2。
 ```{r ans23}
-# course_update2
+course_update[[2]][["teacher"]] <- "紀學檜"
+course_update2 <- course_update
+course_update2
 ```
 
 ## 3 「應用題」一起成為神奇寶貝大師(或者洛托姆)吧!
@@ -105,7 +112,9 @@ List of 9
   ..$ cp2500: int [1:4] 40 15 15 15
 ```
 ```{r ans31}
-# Pikachu
+Gamemaster[[1]][[27]] -> Pikachu
+str(Pikachu)
+Pikachu
 ```
 
 ### 3.2 特定物件取出&class調整
@@ -114,7 +123,9 @@ List of 9
 提示:
 記得class怎麼改嗎?vector內容請按照「atk、def、hp」這樣的順序喔。
 ```{r ans32}
-# Pikachu_stats
+as.numeric(Pikachu$baseStats) ->Pikachu_stats
+class(Pikachu_stats)
+Pikachu_stats
 ```
 
 ### 3.3 特定物件改寫&特定物件取出
@@ -122,7 +133,9 @@ List of 9
 最後跟3.1一樣，將胖丁的相關資料並存在叫做Jigglypuff的list物件。
 
 ```{r ans33}
-# Jigglypuff
+Gamemaster[[1]][[46]]$speciesName <- "Jigglypuff"
+Gamemaster[[1]][[46]] -> Jigglypuff
+Jigglypuff
 ```
 
 ### 3.4 魔王題——考驗自己有沒有成為程式設計大師/洛托姆的時候到了
@@ -141,7 +154,19 @@ List of 9
 提示:
 注意Mimikyu的各種資料格式都應該要跟Pikachu、Jigglypuff他們一樣喔。
 ```{r ans34}
-# Gamemaster
+str(Pikachu)
+str(Jigglypuff)
+Mimikyu <- Pikachu
+Mimikyu$dex <- as.integer(778)
+Mimikyu$speciesName <-"Mimikyu"
+Mimikyu$speciesId <- "mimikyu"
+Mimikyu$types <- c("ghost","fairy")
+Mimikyu$fastMoves <- Jigglypuff$fastMoves
+Mimikyu$chargedMoves <- Jigglypuff$chargedMoves
+Mimikyu$legacyMoves <- Jigglypuff$legacyMoves
+Gamemaster$pokemon[[731]] <- Mimikyu
+str(Mimikyu)
+Gamemaster
 ```
 
 # 恭喜你寫完了!最後記得回去檢查注意事項有沒有都做到，避免被白扣分喔~
