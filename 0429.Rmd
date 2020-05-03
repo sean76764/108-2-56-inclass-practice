@@ -232,31 +232,143 @@ jsonlite::fromJSON("https://www.dropbox.com/s/3uijub7xheib405/list_victimAges_fe
 
 ```{r}
 #請將list_victimAges_female各元素的class做合理設定
-list_victimAges_female$`數目` <-
-  as.integer(list_victimAges_female$`數目`)
-list_victimAges_female$`年齡層` <- 
-  as.factor(list_victimAges_female$`年齡層`)
+list_victimAges_female$數目 <-
+  as.integer(list_victimAges_female$數目)
+list_victimAges_female$年齡層 <- 
+  as.factor(list_victimAges_female$年齡層)
 
 ```
 ```{r}
-levels(list_victimAges_female$`年齡層`) -> levels_ages
+levels(list_victimAges_female$年齡層) -> levels_ages
 print(levels_ages)
 ```
 #將levels順序改成: 不詳，總計，0_5歲，12_17歲，…，70歲以上。
 ```{r}
 levels_new <- c(levels_ages[c(12,13,1,8,2:7,9:11)])
-levels(list_victimAges_female$`年齡層`) <- levels_new
+levels(list_victimAges_female$年齡層) <- levels_new
 ```
 
 #選出「30_39歲以上受害者」的數目
-#####################
+#####################難
 ```{r}
-pick_above30 <- list_victimAges_female$`年齡層` >= "30_39歲"
-View(list_victimAges_female$`年齡層`)
+# 先將類別資料設定成可排序類別資料
+list_victimAges_female$年齡層 <-
+  ordered(list_victimAges_female$年齡層)
+pick_above30 <- 
+  list_victimAges_female$年齡層 >= "30_39歲"
 ```
 
 ```{r}
-sum(list_victimAges_female$`數目`, na.rm=T)
-sum(list_victimAges_female$`數目`[pick_above30], na.rm = T)
+###把na處理掉
+sum(list_victimAges_female$數目, na.rm=T)
+sum(list_victimAges_female$數目[pick_above30], na.rm = T)
+```
+
+###4.4.2 相等，屬於
+==: 等於
+
+!=: 不等於
+
+==與!=可使用於字串
+
+###example裡誰血型B型
+```{r}
+print(example[c("name","bloodType")])
+
+pick_bloodB <- example$bloodType == "B"
+example$name[pick_bloodB]
+```
+###創造可留下偶數的「要/不要」向量pick_evens。
+```{r}
+sequenceNums <- c(11, 6, 8, 11, 12, 11, 3, 7, 10, 8)
+pick_evens <- (sequenceNums%%2) == 0  ###加括號內先做
+sequenceNums[pick_evens]
+```
+%in%: 屬於
+###左邊元素「一一」檢視是不是屬於右邊元素集合。
+```{r}
+x <- c(1,5,8)
+y <- c(5,8)
+
+# x裡的元素值是不是屬於y集合
+x %in% y
+```
+###example裡誰來自大台北
+
+```{r}
+print(example[c("name","residence")])
+
+set_TaipeiMetro <- c("Taipei","New Taipei")
+pick_fromTaipeiMetro <- example$residence %in% set_TaipeiMetro
+example$name[pick_fromTaipeiMetro]
+```
+
+##創造 可選出來自法商學院的「要/不要」向量，pick_lawBusiness
+```{r}
+str(transcript100to103)
+set_business_law <- c("法學院","商學院")
+pick_lawBusiness <- transcript100to103$學院 %in% set_business_law
+```
+#特殊
+```{r}
+levels(factor(transcript100to103$學院))
+unique(transcript100to103$學院)
+```
+#4.4.3 Negation(否定用法)
+在「要/不要」向量前加上!會成為否定句的「要/不要」向量，元素裡的TRUE會轉成FALSE, FALSE則轉成TRUE。
+```{r}
+pick_not_fromTaipeiMetro <- ! pick_fromTaipeiMetro
+# 或
+pick_not_fromTaipeiMetro <- !(example$residence %in% set_TaipeiMetro) # (..) 裡面會先運算完才做外面!的處理
+```
+
+```{r}
+print(example[c("name","residence")])
+
+example$name[pick_fromTaipeiMetro]
+example$name[pick_not_fromTaipeiMetro]
+```
+##4.4.4 資料狀態
+is.na: 有缺失
+
+is.{class/type name}: is.integer, is.character, is.factor … etc
+```{r}
+#有時資料有缺失，在R裡會記成NA(即not available)如下例：
+x2 <- c(1,NA,10)
+y2 <- c(-1,NA,20)
+
+x3 <- c(NA,"小花")
+y3 <- c(NA,"小華")
+```
+前述的關係判斷遇到NA時，結果都會是NA——即無法判斷。要知道向量內各元素值是否NA，可使用is.na():
+```{r}
+x2
+is.na(x2)
+```
+#example裡誰沒有體重資料
+```{r}
+print(example[c("name","weight")])
+
+pick_na <- is.na(example$weight)
+example$name[pick_na]
+```
+R還有一種特別的缺失資料NaN (即not a number)，出現在沒有定義的數學運算上，如：
+```{r}
+0/0
+```
+#創立 可選出缺失資料的「要/不要」向量pick_na, 並計算有多少筆缺失。
+```{r}
+pick_na <- is.na(list_victimAges_female$數目)
+total_na <- sum(pick_na)
+print(total_na)
+```
+#4.4.5 字元偵測
+stringr::str_detect()
+example裡誰喜歡美食
+```{r}
+print(example[c("name","hobby")])
+
+pick_loveFood <- stringr::str_detect(example$hobby,"美食")
+example$name[pick_loveFood]
 ```
 
