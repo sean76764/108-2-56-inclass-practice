@@ -371,4 +371,63 @@ print(example[c("name","hobby")])
 pick_loveFood <- stringr::str_detect(example$hobby,"美食")
 example$name[pick_loveFood]
 ```
+#以下資料為新北市垃圾車路線
+
+```{r}
+jsonlite::fromJSON("https://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json") ->
+  garbageRoutes
+```
+```{r}
+str(garbageRoutes)
+#  1 用typeof()函數查詢電腦實質上如何看待garbageRoutes。
+typeof(garbageRoutes)  
+#  2 用class()函數查詢電腦把它能進行的操作運算歸屬於哪一類型。
+class(garbageRoutes) ####dataframe
+##由於garbageRoutes的本質是list，所以我們可以使用list所有操作手法，而class為data frame表示它有比典型list的運作多了些工具與變化（後面章節會提）。
+```
+```{r}
+# 由linename元素判斷垃圾車有幾條路線。
+factor(garbageRoutes$linename) -> garbageRoutes$linename
+levels(garbageRoutes$linename)
+  
+# 由linename創造： 可篩選出下午路線的「要/不要」向量pick_afternoonRoutes。
+pick_afternoonRoutes <-
+  stringr::str_detect(
+    garbageRoutes$linename,
+    "下午"
+  )
+garbageRoutes$linename[pick_afternoonRoutes]
+```
+###4.4.5.1 閱讀函數說明
+```{r}
+??str_detect
+```
+```{r}
+library(stringr)
+fruit <- c("apple", "banana", "pear", "pinapple")
+str_detect(fruit, "a")
+str_detect(fruit, "^a")##以a開頭
+str_detect(fruit, "a$")##以a結尾
+str_detect(fruit, "b")
+str_detect(fruit, "[aeiou]")
+
+str_detect(fruit, "a$", negate = TRUE)##更改negate
+##相當於
+! str_detect(fruit, "a$")
+
+# Also vectorised over pattern
+str_detect("aecfg", letters)
+
+# Returns TRUE if the pattern do NOT match
+str_detect(fruit, "^p", negate = TRUE)
+```
+##疾病管制署傳染病答問集
+```{r}
+CDC_chatbox <- readr::read_csv("http://od.cdc.gov.tw/pr/CDC_chatbox.csv")
+```
+###找出問題中包含“肺炎”字眼的問題
+```{r}
+pick_numonia <- stringr::str_detect(CDC_chatbox$Question,"肺炎")
+CDC_chatbox$Question[pick_numonia]
+```
 
