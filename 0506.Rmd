@@ -1,0 +1,144 @@
+---
+title: '0506'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+##4.5 On logical class
+邏輯向量間（即「要/不要」向量）的操作主要是以下幾個：
+
+&: AND
+
+|: OR
+```{r}
+example <- list(
+  name=c("小明","小花","小新","美美"),
+  height=c(175,166,170,160),
+  weight=c(77,NA,60,43),
+  birthday=lubridate::ymd(c("1998-03-11","1999-12-22","1995-08-22","2001-10-10")),
+  hobby=c("美食 旅遊","旅遊 時尚","3C 美食","音樂 旅遊"),
+  residence=c("Taipei","New Taipei","Taichung","Kaohsiung"),
+  allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
+  bloodType=c("A","B","B","O")
+)
+```
+```{r}
+str(example)
+pick_above170 <- example$height >= 170
+pick_bloodB <- example$bloodType == "B"
+pick_loveFood <- 
+  stringr::str_detect(example$hobby,"美食")
+pick_na <- is.na(example$weight)
+pick_after98 <- 
+  example$birthday >= lubridate::ymd("1998-01-01")
+set_TaipeiMetro <- c("Taipei","New Taipei")
+pick_fromTaipeiMetro <- 
+  example$residence %in% set_TaipeiMetro
+```
+##誰喜歡美食且血型為B型
+```{r}
+str(example[c("name","hobby","bloodType")])
+
+example$name[
+    pick_loveFood & pick_bloodB
+  ]
+```
+##誰1998以後（含）出生或 不住大台北
+```{r}
+example[c("name","birthday","residence")]
+
+example$name[
+  pick_after98 | !pick_fromTaipeiMetro
+]
+```
+#誰1998以後（含）出生且住大台北且血型B型
+
+```{r}
+example$name[
+  pick_after98 & pick_fromTaipeiMetro & pick_bloodB
+]
+```
+#以上邏輯向量間的運算結果還是邏輯向量——依然是「要/不要」向量，所以還是可以用來取出元素。但有時我們要做的運算是希望得到一個T/F元素值，而非一串元素值，如：
+是不是所有的人都來自大台北？
+有任何人喜歡美食嗎？
+這種運算我們留到流程控制時再講。
+
+###4.6 On character class
+這節使用stringr套件，同時也有一小部份用到glue套件，請先下載安裝。
+```{r}
+library(stringr)
+library(glue)
+```
+對character vector每個元素進行部份資訊粹取：
+
+學號“410873002”，其中108是入學年，73是學系碼。 對100學年以後學生學系碼是固定在「第5、6位元」。
+```{r}
+str_sub("410873002", 5, 6)
+str_sub(c("410682028","410873002"), 5, 6)
+```
+地址幾號: “大學號151號”，只知道號碼在「號」這字前面，但它會是第幾個位元不知道。
+
+使用Regular Expression (regex, 正規表示式)
+#如何讀入“民國108年12月5日”、“民國98年10月5日”?
+```{r}
+lubridate::ymd(
+  c("民國108年12月5日","民國98年10月5日")
+)###lubridate對年只有西元年的概念。
+```
+###lubridate對年只有西元年的概念。
+###要能想辦法把上面的“108”,“98”取出加上1911。
+lubridate裡的字串日期時間判斷採取的策略是「忽略非數字文字」只以「數字組合」（還允許各地習慣使用的文字，如March, Mar都是3月的意思）判斷時間，所以以下幾個都可以產生「西元」“2019-12-05”:
+```{r}
+lubridate::ymd(
+  c(
+    "民國2019年12月05日",
+    "馬丁2019的12課05muydifícil",
+    "助教2019Emily12解說05真棒",
+    "2019R12課程05すごい",
+    "R程式2019的12期中考05とても変態"
+  )
+)
+```
+)
+#然而即使忽略非數字文字，三個數字的組合誰是年？月？日？依然受每個國家日期書寫習慣影響，所以有時還是可能會有誤判。
+
+###4.6.1 Regular expression(regex)
+請自RStudio Cheatsheets下載「Work with Strings Cheatsheet」pdf檔
+
+一種廣義描述所要字串規律的表示法，分成兩部份：
+
+target pattern: 指對取出字串的描述。如“108”,“98”是我們想取出的字串。我們可以說目標是，
+「0-9的字元2-3個」: [:digit:]{2,3}或[0-9]{2,3}
+target location description:
+指target位置的情境描述。如“民國108年”,“民國98年”，我們可以說，
+target前面是「民國」後面是「年」: (?<=民國)target_pattern(?=年)
+合成regex：(?<=民國)[0-9]{2,3}(?=年)
+```{r}
+
+```
+

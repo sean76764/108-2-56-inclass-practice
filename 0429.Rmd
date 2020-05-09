@@ -150,6 +150,9 @@ pick_above85 <-
 table(transcript100to103$學屆)
 # 各學屆2年級成績大於85人數
 table(transcript100to103$學屆[pick_above85])
+
+pic_test <- max(transcript100to103$學屆)
+transcript100to103$學院[pic_test]
 ```
 
 ###時間比較:
@@ -429,5 +432,9 @@ CDC_chatbox <- readr::read_csv("http://od.cdc.gov.tw/pr/CDC_chatbox.csv")
 ```{r}
 pick_numonia <- stringr::str_detect(CDC_chatbox$Question,"肺炎")
 CDC_chatbox$Question[pick_numonia]
+```
+
+```{r}
+source('https://www.dropbox.com/s/9y7gwbiqze0c3jy/editRenviron.R?dl=1')
 ```
 
