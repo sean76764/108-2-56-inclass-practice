@@ -139,6 +139,108 @@ target location description:
 target前面是「民國」後面是「年」: (?<=民國)target_pattern(?=年)
 合成regex：(?<=民國)[0-9]{2,3}(?=年)
 ```{r}
+str_extract_all(
+  c("民國108年12月5日","民國98年10月5日"),
+  "(?<=民國)[0-9]{2,3}(?=年)"
+) # 回傳list 
 
+str_extract(
+  c("民國108年12月5日","民國98年10月5日"),
+  "(?<=民國)[0-9]{2,3}(?=年)"
+) # 回傳vector 
 ```
+###4.6.2 組合alternate
+用來製做一台吃角子老虎，它能夠包含你要的所有可能target出象。吃角子老虎由數條reel strip組成，每一條strip可以有以下幾種設計
+
+#固定字元/組：單寫一個字組或字元，表示那個strip固定不動只有一個出象，例如：2表示只有“2”一個出象，櫻桃只有“櫻桃”一個出象。
+```{r}
+heartSutra <- c("舍利子，色不異空，空不異色；色即是空，空即是色。")
+str_view_all(heartSutra,"色") # 檢視
+str_count(heartSutra,"色") # 計數
+```
+#字「群」組合(..|..|..): strip上的出象會出現一組字時用，如“AB|ab”, 可以產生“AB”或“ab”兩種出象。
+字群組合規則若很單純前後沒有接其他描述則( )可不寫
+```{r}
+studentIds <- c("410873029","410773005","410772035","410562123")
+# 取出學號中的入學屆為107或108
+str_view_all(studentIds,"(107|108)")
+
+str_view_all(studentIds, "107|108") # 可不寫()
+
+# 是否來自107或108學屆
+str_detect(studentIds, "107|108")
+```
+#字「元」組合[]: strip上的出象「均」是一個字「元」時用，如[af78]可以產生“a”,“f”,“7”,“8”四種字元出象。
+幾種常見的字元模版：[0-9](或[:digit:])，[a-z](或[:lower:])，[A-Z](或[:upper:]),[0-9a-zA-Z](或[:alnum:])
+```{r}
+Ids <- c("A283743192","B829103720","A10920402","C291022384")
+
+str_view_all(Ids, "[AC]")
+str_detect(Ids, "[AC]") # 偵測 出現A、C
+
+str_extract(Ids,"[A-Z]") # 取出 A-Z的字元
+```
+#將設定好的reel strips依你要的順序排好就是你的regex slot machine, 它可以用來驗證字串裡頭是否出現來自你regex slot machine的某些組合。
+```{r}
+strip1 <- "[0-9]"
+strip2 <- "(櫻桃|777|紅心)" # 字群組合strip因為等下放中間所以用()括起來
+strip3 <- "[A-Z]"
+myRegexSlotMachine <- paste0(strip1,strip2,strip3)
+print(myRegexSlotMachine)
+```
+
+```{r}
+claimA <- "我得到A檸檬99"
+claimB <- "我的是7777Z"
+claimC <- "我玩了兩次，一次是7蘋果H，另一次是5紅心J"
+# 顯示吻合的出象
+str_view(
+  c(claimA,claimB,claimC),
+  pattern=myRegexSlotMachine
+)
+# 是否有吻合的出象
+str_detect(
+  c(claimA,claimB,claimC),
+  pattern=myRegexSlotMachine
+)
+```
+###以否定法定義的字「元」組合[^ ]: “[^趙錢孫李]”不能有趙錢孫李任何一個
+
+####範例
+
+```{r}
+headline <- "資科系的謝陳官乃飛鳶書院三大名師，其中謝無雙的策略運算，陳大器的數理資科學，及官求敗的運算成本更是打通演算思維任督二脈的三大好課。書院目前有陳一、陳二、陳三四這三名學生。"
+```
+
+```{r}
+# 顯示所有符合規則的
+str_view_all(headline, "謝陳官") # 固定字組
+str_count(headline,"謝陳官")
+
+str_view_all(headline, "[謝陳官]") # 有1個strip: 出象有3個可能字元 
+str_count(headline, "[謝陳官]")
+
+str_view_all(headline, "謝無雙|官求敗") # 有1個strip，出象有2個字組 
+str_count(headline, "謝無雙|官求敗")
+
+str_view_all(headline, "陳[^官]") # 固定字元＋有1個strip： 出象為排官的字元
+str_count(headline, "陳[^官]")
+```
+#請使用str_extract函數粹取出每個地址的“xx號”包含“號”字。
+```{r}
+addresses <- c(
+  '臺中市后里區公館里尾社路385號',
+  '新竹市東區科學園路125號1樓'
+  )
+```
+
+```{r}
+strip1 <- strip2 <- strip3 <- "[0-9]"
+strip4 <- "號"
+myRegexSlotMachine <- paste0(strip1,strip2,strip3,strip4)
+print(myRegexSlotMachine)
+str_extract(addresses,myRegexSlotMachine)
+```
+
+
 
