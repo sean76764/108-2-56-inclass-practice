@@ -1,0 +1,151 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+#4.7 On factor class
+內定levels順序是根據電腦內字元排序（collating sequence）依辭典序列方式決定排序，很多時候沒有意義。
+```{r}
+char1 <- c("Wild","Apple","Donald","May","Avocada") 
+factor1 <- factor(char1)
+levels(factor1)
+```
+```{r}
+library(stringr)
+char2 <- c("蔡英文","習近平","Donald Trump","蔡頭") 
+factor2 <- factor(char2)
+levels(factor2)
+
+sort(
+  str_sub(char2,1,1)
+)
+sort(
+  str_sub(char2,2,2)
+)
+```
+#查詢你的collating sequence設定：
+```{r}
+Sys.getlocale("LC_COLLATE")
+```
+
+#嚴重特殊傳染性肺炎
+```{r}
+jsonlite::fromJSON("https://od.cdc.gov.tw/eic/Day_Confirmation_Age_County_Gender_19CoV.json") -> covid19
+```
+```{r}
+# 不可排序類別：性別、縣市、是否境外移入
+covid19$縣市 <- 
+  factor(covid19$縣市)
+covid19$性別 <-
+  factor(covid19$性別)
+covid19$是否為境外移入 <-
+  factor(
+    covid19$是否為境外移入
+  )
+```
+
+```{r}
+# 可排序類別資料：年齡層
+covid19$年齡層 <-
+  factor(
+    covid19$年齡層,
+    ordered=TRUE
+  )
+```
+```{r}
+levels(covid19$縣市)
+levels(covid19$性別)
+levels(covid19$是否為境外移入)
+```
+```{r}
+covid19$年齡層
+levels(covid19$年齡層)###排序錯誤
+```
+
+#4.7.1 levels重新排列
+重新再定義factor一次
+factor(目前的factor向量, levels=自訂排序)
+###levels放第二格時， levels= 可省略。
+目前的類別向量的可不可排序性質依然會保留，不用特意去設ordered=T/F
+
+使用函數時，若argument input的位置就是原help說明裡定義該argument位置時，「argument_name =」部份可以不寫。
+##手動輸入排法：由女男改男女
+```{r}
+levels(covid19$性別)
+covid19$性別 <- factor(covid19$性別, c("男","女"))
+```
+#依與levels相關的其他數據排列：
+
+covid19$縣市的levels依其人口由大排到小。如“新北市”人口最多，它就要排levels的第一個，依此類推。
+演算思維：
+
+下載台灣各縣市人口資料：
+```{r}
+jsonlite::fromJSON(
+  "https://www.dropbox.com/s/jckqryeh5zeat5w/regionPopulation.json?dl=1"
+) -> population
+unlist(population) -> population
+```
+#資料科學心法一：拿到新的資料先檢視「內容」、「class/type」
+```{r}
+print(population)
+class(population) # 判斷出是named integer vector
+names(population) # 元素名稱是台灣各縣市
+population[["新北市"]]
+```
+#留下levels中有的popluation元素
+```{r}
+levels(covid19$縣市) # 是名稱字串向量
+
+# 由於population元素值有names，可以用`[名稱字串向量]`取出所要的
+levels(covid19$縣市) -> levelsInData
+population[levelsInData] -> population
+```
+#將population由大排到小(sort(x, decreasing=T)可將x numeric vector由大排到小。)
+```{r}
+population <- sort(population, decreasing=T)
+population
+```
+#排完後population第一個元素值最大，它的名稱即是人口最多的縣市，第二元素值次大，它名稱是人口第二多縣市，依此類推。我們要的是population排完後的元素名稱。
+```{r}
+newLevels <- names(population)
+newLevels
+```
+#重設levels排序
+```{r}
+covid19$縣市 <-
+  factor(
+    covid19$縣市, levels=newLevels
+  )
+
+levels(covid19$縣市)
+```
+###將covid19$縣市 依縣市目前個案數目由大排到小。（hint: 可使用table()來得到個案數統計, 它會自然產生named integer vector）
+```{r}
+
+```
+
