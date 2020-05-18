@@ -74,10 +74,10 @@ List of 1
 ```
 
 ```{r ans22}
-regex_pattern <- "(?<=####\\s\\s)[:graph:]+(?=\\s\\s|。)"
-context_picked_split <- str_extract_all(context_picked, regex_pattern)
-context_picked_split
+regex_pattern <- "[:graph:](?=\\s\\s)"
+context_picked_split <- str_split(context_picked, regex_pattern)
 str(context_picked_split)
+context_picked_split
 ```
 
 ### 2.3
@@ -86,13 +86,16 @@ str(context_picked_split)
 可能有用的提示: 出現0或1次的複製次數是用?號接在文字的後面。
 
 ```{r ans23}
-# mention_duan
+mention_duan <- str_extract_all(context_picked_split[[1]],
+                "姓段的小子|段(譽|兄|兄弟|大哥|相公|君)")
+mention_duan
 ```
 
 ### 2.4
 使用`unlist()`函數將mention_duan轉成字串後用`table()`函數統計段譽各稱號被提到的次數，並將table結果存在table_duan (class table)。
 ```{r ans24}
-# table_duan
+table_duan <- table(unlist(mention_duan))
+table_duan
 ```
 
 

@@ -146,6 +146,200 @@ levels(covid19$縣市)
 ```
 ###將covid19$縣市 依縣市目前個案數目由大排到小。（hint: 可使用table()來得到個案數統計, 它會自然產生named integer vector）
 ```{r}
+table(covid19$確定病例數)
+```
+#年齡應該用年齡區間起始數字排序
+```{r}
+levels(covid19$年齡層)
+```
+
+###取出levels中各年齡層的起始數字，存在startingAges
+```{r}
+level_names <- levels(covid19$年齡層)
+startingAges <- stringr::str_extract(
+  level_names,
+  "^[0-9]+" # regex：開頭的一串數字
+)
+```
+###將startingAges變成named integer vector
+```{r}
+# 要numerical class排的才一定對
+startingAges <- as.integer(startingAges)
+names(startingAges) <- level_names
+```
+###將startingAges從小排到大。
+```{r}
+sort(startingAges) -> startingAges
+```
+###重設levels排序
+```{r}
+covid19$年齡層 <- 
+  factor(
+    covid19$年齡層, names(startingAges)
+  )
+levels(covid19$年齡層)
+```
+#4.7.2 levels改名
+levels(x) <- 
+#在R裡，若你看到函數f說明在Usage同時寫上f() <-的用法時，它表示此函數除了一般用來產生結果以外，也可以用來設定結果。
+
+levels: 一般用來顯示類別
+
+levels <- : 用來設定類別
+
+其他常用到設定用法的還有names(),attr()等等
+
+```{r}
+factor1 <- factor(
+  c("A","A","C","A","D","F","D","D")
+)
+factor1
+
+levels(factor1) <- c("優","佳","尚可","普")
+
+factor1
+```
+###也可改levels其中幾個利用元素取代概念
+```{r}
+levels(factor1)[[1]] <- "Excellent"
+levels(factor1)[c(3,4)] <- c("C","D")
+factor1
+```
+#4.7.3 levels整併
+原本levels是台灣各縣市，你想改成北/中/南/東部四類。
+
+原本年齡層levels是每5歲一個間距，你想改成10歲一個間距。
+
+###範例一：
+```{r}
+factor1 <- 
+  factor(c("新北市","台北市","台中市","彰化市","基隆市","苗栗縣","苗栗縣"))
+factor1
+```
+```{r}
+levels(factor1) <- c("中部","北部","中部","北部","北部","中部")
+factor1
+```
+###範例二：
+```{r}
+factor1 <- factor(c("0-4歲","5-9歲","10歲以上","0-4歲","5-9歲","5-9歲","10歲以上"))
+factor1
+```
+```{r}
+levels(factor1) <- c("0-9歲","10歲以上","0-9歲")
+factor1
+```
+###練習
+由covid19$縣市建立一個地區變數，值為北部、中部、南部、東部，其中：
+
+北部：“宜蘭縣、基隆市、台/臺北市、新北市、桃園市、新竹市、新竹縣”
+
+中部：“苗栗縣、台/臺中市、彰化縣、南投縣、雲林縣”
+
+南部：“嘉義市、嘉義縣、台/臺南縣、台/臺南市、高雄市、屏東縣、澎湖縣”
+
+東部：“花蓮縣、台東縣”
+```{r}
+library(stringr)
+covid19$地區 <- covid19$縣市
+levels(covid19$地區)
+currentLevels <- levels(covid19$地區)
+
+# 整併
+north_regex <- "宜蘭縣|基隆市|[台臺]北市|新北市|桃園市|新竹市|新竹縣"
+middle_regex <- "苗栗縣|[台臺]中市|彰化縣|南投縣|雲林縣"
+south_regex <-
+  "嘉義市|嘉義縣|[台臺]南[縣市]|高雄市|屏東縣|澎湖縣"
+east_regex <- "花蓮縣|台東縣"
+
+currentLevels <- str_replace(currentLevels, 
+            north_regex, "北部")
+currentLevels <- str_replace(currentLevels, 
+            middle_regex, "中部")
+currentLevels <- str_replace(currentLevels, 
+            south_regex, "南部")
+newLevels <- str_replace(currentLevels, 
+            east_regex, "東部")
+
+
+levels(covid19$地區) <- newLevels
+covid19$地區
+```
+###練習
+#seq(start,end,by?)
+將covid19$年齡層，由5歲間距成10歲間距，使改完後的levels為4 < 5-14 < 15-24 < …< 55-64 < 65+
+```{r}
+levels(covid19$年齡層)
+
+# 創造10歲間距的所有可能
+start <- seq(5, 55, by=10) # 由5到55，每個值差10的數值向量
+end <- seq(14, 64, by=10)
+middleLevels <- 
+  rep(
+    paste0(start,"-",end), 
+    each=2) # 每個新間距要2個
+newLevels <- c("4", middleLevels, "65+", "65+")
+
+levels(covid19$年齡層) <- newLevels
+covid19$年齡層
+```
+#4.7.4 levels擴充
+###levels <-右邊值的部份包含原本的外，還有想新增的類別。
+```{r}
+factor2 <- 
+  factor(c("好","好","普通","普通", "好"))
+levels(factor2)
+```
+加一筆新資料“差”（之前沒有這類）
+```{r}
+factor2[[6]] <- "差"
+factor2 # 元素6變NA
+```
+先擴大levels, 再加新資料
+```{r}
+factor2 <- 
+  factor(c("好","好","普通","普通", "好"))
+levels(factor2)
+
+# 先擴大levels
+levels(factor2) <- c(levels(factor2), "差")
+levels(factor2)
+factor2[[6]] <- "差"
+factor2
+```
+```{r}
+levels(factor2)[[4]] <- "尚可"
+factor2[[7]] <- "尚可"
+factor2
+```
+
+###factor無法用c(...)把兩個factor vector串接在一起：
+```{r}
+# non factor
+char1 <- c("小明","小美")
+char2 <- c("大雄","技安")
+c(char1, char2)
+
+# factor
+factor1 <- factor(c("好", "壞", "壞"))
+factor2 <- factor(c("壞", "好", "好"))
+c(factor1, factor2)
+```
+#因為The output type is determined from the highest type of the components in the hierarchy NULL < raw < logical < integer < double < complex < character < list < expression. factor是integer type所以會被當integer後才串接在一起。
+
+正確接法：
+```{r}
+factor1[4:6] <- factor2##取出不存在把factor2加入
+factor1
+```
+###或使用套件forcats裡的fct_c函數
+```{r}
+forcats::fct_c(factor1, factor2)
+```
+#4.7.5 綜合練習
+將covid19$性別的levels名稱男、女改Male、Female。
+```{r}
 
 ```
+
 
