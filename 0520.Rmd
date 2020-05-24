@@ -1,0 +1,191 @@
+---
+title: '0520'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+###4.8 On list
+```{r}
+library(purrr)
+```
+
+###4.8.1 每個元素相同運算
+```{r}
+example <- list(
+  name=c("小明","小花","小新","美美"),
+  height=c(175,166,170,160),
+  weight=c(77,NA,60,43),
+  birthday=lubridate::ymd(c("1998-03-11","1999-12-22","1995-08-22","2001-10-10")),
+  hobby=c("美食 旅遊","旅遊 時尚","3C 美食","音樂 旅遊"),
+  residence=c("Taipei","New Taipei","Taichung","Kaohsiung"),
+  allowance=factor(c("0-1000","1001-2000","2000+","1001-2000")),
+  bloodType=c("A","B","B","O")
+)
+```
+#我們有可能想要拿出其中屬於小新的資料：
+```{r}
+pick_小新 <- example$name == "小新"
+data_selected <- 
+  list(
+    name=example$name[pick_小新],
+    weight=example$weight[pick_小新],
+    height=example$height[pick_小新],
+    hobby=example$hobby[pick_小新],
+    residence=example$residence[pick_小新],
+    allowance=example$allowance[pick_小新],
+    bloodType=example$bloodType[pick_小新]
+  )
+```
+
+#data_selected的產生，相當於進行
+example[[1]][pick_小新],
+example[[2]][pick_小新],
+example[[3]][pick_小新],
+example[[4]][pick_小新],
+example[[5]][pick_小新],
+example[[6]][pick_小新],
+example[[7]][pick_小新]
+
+再存放在list()裡。也就是我們想要：
+
+對example底下的每個元素進行
+
+[pick_小新]的動作
+
+purrr底下的map()允許我們
+
+使用.x來代表每個元素，即[[1]], [[2]], ..., [[7]]
+所以
+
+對每個元素進行[pick_小新]
+
+可以寫成.x[pick_小新]。
+
+由於.x[pick_小新]是個公式化的動作，在R，~代表要形成一個公式(formula)，所以
+
+要寫成~ .x[pick_小新]
+
+###完整的map()用法為：
+
+map(對象物件, ~對每個元素作的動作)
+#以一開始的例子為例：
+
+對 example 底下的每個元素進行
+
+.x[pick_小新] 的動作
+```{r}
+map(example, ~.x[pick_小新]) -> 
+  data_selected 
+  
+data_selected 
+```
+#範例：舞蹈表演
+舞蹈表演資訊
+```{r}
+jsonlite::fromJSON("https://www.dropbox.com/s/6252gbdnv9owljm/dance.json?dl=1", simplifyDataFrame = F) -> dance
+```
+```{r}
+# 第一個dance表演名稱
+dance[[1]]$title
+# 第二個dance表演名稱
+dance[[2]]$title
+```
+若想得到所有表演的名稱，我們得：
+
+對 dance 每一個元素(.x表示)進行
+
+.x$title的動作
+```{r}
+map(dance, ~.x$title) ->
+  list_titles
+
+View(list_titles)
+```
+每個表演有時不止演出一場，每個表演的場次總數：
+```{r}
+# 記載第一個表演的所有場次訊息
+dance[[1]]$showInfo
+str(dance[[1]]$showInfo)
+# 計算第一個表演有幾個場次
+length(dance[[1]]$showInfo)
+# 計算第二個表演有幾個場次
+length(dance[[2]]$showInfo)
+```
+#對 dance 每個元素進行
+
+length(.x$showInfo)的動作
+
+```{r}
+map(dance,~length(.x$showInfo)) ->
+  list_numberOfShows 
+  
+View(list_numberOfShows)
+```
+#第4個表演有6個場次，想知道它們的日期時間：
+```{r}
+str(dance[[4]]$showInfo)
+```
+```{r}
+# 這個表演第1個場次的訊息
+dance[[4]]$showInfo[[1]]$time
+# 這個表演第2個場次的訊息
+dance[[4]]$showInfo[[2]]$time
+```
+對 dance[[4]]$showInfo 的每個元素(.x)表示
+
+進行 .x$time 動作
+```{r}
+map(dance[[4]]$showInfo, ~ .x$time) ->
+  
+list_showTimes_dance4
+```
+#找出第8個表演的所有場次時間(time)和地點(location):
+```{r}
+str(dance[[8]]$showInfo)
+map(dance[[8]]$showInfo, ~.x$time)
+map(dance[[8]]$showInfo, ~.x$location)
+```
+
+###4.8.2 綜合練習
+#1.
+新北市公車路線清單
+```{r}
+jsonlite::fromJSON("https://data.ntpc.gov.tw/api/datasets/0EE4E6BF-CEE6-4EC8-8FE1-71F544015127/json/preview", simplifyDataFrame = F) -> busRoutes
+```
+請抓出每條路線的Id(路線代碼)、providerId(業者代碼)、providerName(業者中文名稱)、nameZh(中文名稱)。
+```{r}
+map(busRoutes, ~.x$Id)
+map(busRoutes, ~.x$providerId)
+map(busRoutes, ~.x$providerName)
+map(busRoutes, ~.x$nameZh)
+```
+#2.
+一般天氣預報-今明36小時天氣預報:
+
+欄位說明： https://opendata.cwb.gov.tw/opendatadoc/MFC/
+```{r}
+jsonlite::fromJSON("https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=rdec-key-123-45678-011121314&format=JSON") ->
+  weather_next36hours
+```
+

@@ -342,4 +342,30 @@ forcats::fct_c(factor1, factor2)
 
 ```
 
+#以下資料為新北市垃圾車路線
+```{r}
+jsonlite::fromJSON("https://data.ntpc.gov.tw/od/data/api/EDC3AD26-8AE7-4916-A00B-BC6048D19BF8?$format=json") ->
+  garbageRoutes
+```
+##在garbageRoutes新增route元素，其元素值為對應garbageRoutes$linename裡粹取出的“XXX路線”字眼，如原本“A11路線(一、四)下午”的linename, 它的route值為“A11路線” 。（garbageRoutes$route為factor class)
+```{r}
+strip01<-paste0("[:graph:]+","路線")
+extract_data <- str_extract(garbageRoutes$linename, strip01)
+garbageRoutes$route <- factor(unlist(extract_data))
+```
+##請設定garbageRoutes$route的levels依其路線停靠總站數由小排到大陳列
+```{r}
+route01<-garbageRoutes$route
+levels(route01)
+class(route01)
+sort(summary(route01))
+names(sort(summary(route01)))
+new_order=names(sort(summary(route01)))
+new_order
+
+#回存
+garbageRoutes$route<-factor(
+  garbageRoutes$route,
+  new_order
+```
 
