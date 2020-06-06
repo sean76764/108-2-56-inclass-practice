@@ -2,8 +2,8 @@
 title: "homework 5"
 output: html_document
 params:
-  studentName: "張為翔"
-  studentID: "410682028"
+  studentName: "你的名字"
+  studentID: "你的學號"
 editor_options: 
   chunk_output_type: console
 ---
@@ -40,82 +40,67 @@ jsonlite::fromJSON("https://www.dropbox.com/s/es19f62rijrd8i7/studentHeight.json
 請將「學年度」及「年齡」都改成ordered factor, levels順序以其文字數值從小排到大。( 答案物件studentHeights本身)
 
 ```{r ans11}
-year_neworder <- sort(as.integer(levels(factor(studentHeights$學年度))))
-studentHeights$學年度 <- factor(studentHeights$學年度, year_neworder, order=T)
+studentHeights$學年度 <- factor(
+  studentHeights$學年度, ordered = T
+)
+studentHeights$學年度
 
-age_neworder <- sort(as.integer(levels(factor(studentHeights$年齡))))
-studentHeights$年齡 <- factor(studentHeights$年齡, age_neworder, ordered=T)
+studentHeights$年齡 <- as.integer(studentHeights$年齡)
+studentHeights$年齡 <- factor(
+  studentHeights$年齡, ordered = T
+)
+studentHeights$年齡
 
-studentHeights
-
+# studentHeights
 ```
 
 ### 1.2 年齡層
 請在studentHeights新增「年齡層」元素（class ordered factor），其類別排序為6-8 < 9-12 < 13-15三類年齡層。
 ```{r ans12}
-age_range <- levels(factor(studentHeights$年齡層))
-startingAges <- stringr::str_extract(
-  age_range,
-  "^[0-9]+" # regex：開頭的一串數字
-)
-startingAges <- as.integer(startingAges)
-names(startingAges) <- age_range
-startingAges <- sort(startingAges)
+studentHeights$年齡層 <- 
+  factor(studentHeights$年齡, ordered=T)
 
-studentHeights$年齡層 <- factor(studentHeights$年齡層, names(startingAges), order=T)
-studentHeights$`年齡層`
+levels(studentHeights$年齡層) <-
+  c(
+    rep("6-8",3),
+    rep("9-12",4),
+    rep("13-15",3)
+  )
+
+# studentHeights$`年齡層`
 ```
 
 ### 1.3 各年齡層平均身高
 請創造一個named numeric vector, averageHeightByGroup (class numeric, length=3) 其值分別是三組年齡層各自所包含年齡下不分性別身高的平均（即第一個值是所有6-8歲不分學年度、不分性別身高（總計身高）的平均，再來是9-12歲，最後是13-15歲），而此vector的元素名稱也分別是"6-8", "9-12", "13-15" (hint: 數值向量x元素平均, 可用mean(x)求得； 這題也考驗同學組合數個「要不要」向量`pick_XXX`)
 
 ```{r ans13}
+pick_6.8 <- studentHeights$年齡層 == "6-8"
+pick_9.12 <- studentHeights$年齡層 == "9-12"
+pick_13.15 <- studentHeights$年齡層 == "13-15"
 pick_total <- studentHeights$類別 == "總計" 
+averageHeightByGroup <- c(
+  `6-8`=mean(studentHeights$平均身高[pick_6.8 & pick_total]),
+  `9-12`=mean(studentHeights$平均身高[pick_9.12 & pick_total]),
+  `13-15`=mean(studentHeights$平均身高[pick_13.15 & pick_total])
+)
 
-
-pick_1 <- studentHeights$年齡層 == "6-8"
-height_picked1 <- studentHeights$平均身高[pick_1&pick_total]
-mean_height1 <- mean(height_picked1)
-
-pick_2 <- studentHeights$年齡層 == "9-12"
-height_picked2 <- studentHeights$平均身高[pick_2&pick_total]
-mean_height2 <- mean(height_picked2)
-
-pick_3 <- studentHeights$年齡層 == "13-15"
-height_picked3 <- studentHeights$平均身高[pick_3&pick_total]
-mean_height3 <- mean(height_picked3)
-
-averageHeightByGroup <- c(mean_height1, mean_height2, mean_height3)
-names(averageHeightByGroup) = c("6-8","9-12","13-15")
-
-averageHeightByGroup
+# averageHeightByGroup
 ```
 
 ### 1.4 性別差異
-請創造一個named numeric vector, genderDifferenceByAge (class numeric, length=3) 其值分別是三組年齡層各自所包含年齡下的「男性平均」減去「女性平均」（即第一個值是所有6-8歲不分學年度的男女平均差異，再來是9-12歲，最後是13-15歲），而此vector的元素名稱也分別是"6-8", "9-12", "13-15" (hint: 數值向量x元素平均, 可用mean(x)求得)
+請創造一個named numeric vector, heightDifferenceByGroup (class numeric, length=3) 其值分別是三組年齡層各自所包含年齡下的「男性平均」減去「女性平均」（即第一個值是所有6-8歲不分學年度的男女平均差異，再來是9-12歲，最後是13-15歲），而此vector的元素名稱也分別是"6-8", "9-12", "13-15" (hint: 數值向量x元素平均, 可用mean(x)求得)
 
 ```{r ans14}
-pick_1 <- studentHeights$年齡層 == "6-8"
-pickboy_1 <- studentHeights$類別 == "男"
-pickgril_1 <- studentHeights$類別 == "女"
+pick_male <- studentHeights$類別=="男"
+pick_female <- studentHeights$類別=="女"
 
-height_boypicked1 <- studentHeights$平均身高[pickboy_1][pick_1]
-mean_heightboy_1 <- mean(height_boypicked1)
+heightDifferenceByGroup <- c(
+  `6-8`=mean(studentHeights$平均身高[pick_6.8 & pick_male])-
+    mean(studentHeights$平均身高[pick_6.8 & pick_female]),
+  `9-12`=mean(studentHeights$平均身高[pick_9.12 & pick_male])-mean(studentHeights$平均身高[pick_9.12 & pick_female]),
+  `13-15`=mean(studentHeights$平均身高[pick_13.15 & pick_male]-mean(studentHeights$平均身高[pick_13.15 & pick_female]))
+)
 
-
-
-pick_2 <- studentHeights$年齡層 == "9-12"
-height_picked2 <- studentHeights$平均身高[pick_2]
-mean_height2 <- mean(height_picked2)
-
-pick_3 <- studentHeights$年齡層 == "13-15"
-height_picked3 <- studentHeights$平均身高[pick_3]
-mean_height3 <- mean(height_picked3)
-
-averageHeightByGroup <- c(mean_height1, mean_height2, mean_height3)
-names(averageHeightByGroup) = c("6-8","9-12","13-15")
-
-averageHeightByGroup
 # heightDifferenceByGroup
 ```
 
@@ -130,10 +115,12 @@ jsonlite::fromJSON("https://www.dropbox.com/s/bp0w8tjgrhi79x7/sameMajorDifferent
 請寫下「一個」字串的regex字串向量，稱之為realEstateRegex （class character, length=1）,
 
 ```{r ans21}
-library(stringr)
-realEstateRegex <- "^[不][:graph:]+"
-str_view_all(differentMajors, realEstateRegex)
-realEstateRegex
+realEstateRegex <- "不動(產)?與?(城鄉)?(環境)?學?系"
+# 這裡也可以偷懶不細分字群，而把所有的字「元」都加? 除了一定要出現的字「元」才不加，即
+realEstateRegex <-
+  "不動產?與?城?鄉?環?境?學?系"
+
+# realEstateRegex
 ```
 
 使得執行以下程序後differentMajors裡屬「不動產與城鄉環境學系（不管何種寫法）」的都會變成"不動系"。這裡regex還有一個限制考驗，就是：「不動產與城鄉環境學系」的十個字都只會出現一次（所以不能寫"(不動系|不動產系|...)"之類的——不、動、系三字出現二次，違規）。(hint: 這題使用regex quantifier裡的`?`會容易很多)
@@ -146,8 +133,10 @@ str_replace(differentMajors,realEstateRegex,"不動系")
 ### 2.2 factor levels
 直接將differentMajors轉成factor, 並將它的levels存在currentLevels（class character）。（雖然同系有不同叫法而形成好幾個levels，這題不用去整併它。）
 ```{r ans22}
-currentLevels <- levels(factor(differentMajors))
-currentLevels
+factor(differentMajors) -> differentMajors
+currentLevels <- levels(differentMajors)
+
+# currentLevels
 ```
 
 
@@ -155,8 +144,13 @@ currentLevels
 請寫下「一個」字串的regex（class character, length=1）稱之為bSchoolRegex,
 
 ```{r ans23}
-bSchoolRegex <- "^[休|金][:graph:]+"
-bSchoolRegex
+bSchoolRegex <- 
+  "(金融(與合作)?(經營)?|休(閒與)?運(動管理)?)學?系"
+# 或偷懶
+bSchoolRegex <- 
+  "(金融與?合?作?經?營?|休閒?與?運動?管?理?)學?系"
+
+# bSchoolRegex
 ```
 
 使得執行以下程序後currentLevels裡屬商學院的系都會變成"商學院"。（其實此題也可以要求第一題的限制，但怕難度太高這題則不設「系名字元不重覆」的限制）
@@ -172,29 +166,47 @@ str_replace(currentLevels,bSchoolRegex,"商學院")
   
 這題不限方法或regex使用次數。（答案物件differentMajors本身, class factor）
 ```{r ans24}
-sports_Regex <- "^[休][:graph:]+"
-differentMajors <- str_replace_all(differentMajors, sports_Regex, "休運系")
+levels(differentMajors) -> currentLevels
+currentLevels
+str_replace(
+  currentLevels,
+  "不動(產)?與?(城鄉)?(環境)?學?系",
+  "不動系"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "休閒?與?運?動?管?理?學?系",
+  "休運系"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "公共?行?政?暨?政?策?學?系",
+  "公行系"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "金融?與?合?作?經?營?學?系",
+  "金融系"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "社會學?系",
+  "社會系"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "經濟學?系",
+  "經濟系"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "社會工作學系",
+  "社工系"
+) -> currentLevels
 
-finance_regex <- "^[金][:graph:]+"
-differentMajors <- str_replace_all(differentMajors, finance_regex, "金融系")
+levels(differentMajors) <-  currentLevels
 
-econ_regex <- "^[經][:graph:]+"
-differentMajors <- str_replace_all(differentMajors, econ_regex, "經濟系")
-
-social_regex <- "社會?(系|學系)"
-differentMajors <- str_replace_all(differentMajors, social_regex, "社會系")
-
-socialwork_regex <- "(社|社會)?(工系|工作學系)"
-differentMajors <- str_replace_all(differentMajors, socialwork_regex, "社工系")
-
-public_regex <- "^[公][:graph:]+"
-differentMajors <-str_replace_all(differentMajors, public_regex, "公行系")
-
-realEstateRegex <- "^[不][:graph:]+"
-differentMajors <-str_replace_all(differentMajors, realEstateRegex, "不動系")
-
-differentMajors <- factor(differentMajors)
-differentMajors
+# differentMajors
 ```
 
 
@@ -211,21 +223,22 @@ differentMajors
 
 ```{r ans25}
 school <- differentMajors
+levels(school) -> currentLevels
+str_replace(
+  currentLevels,
+  "(休運|金融)系", "商學院"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "(經濟|社會|社工)系", "社科院"
+) -> currentLevels
+str_replace(
+  currentLevels,
+  "(公行|不動)系", "公共事務學院"
+) -> currentLevels
 
-business_regex <- "^[休|金][:graph:]+"
-school <- str_replace_all(school, business_regex, "商學院")
+levels(school) <- currentLevels
 
-socialScience_regex <- "(經|社)?(濟|會|工)[:graph:]+"
-school <- str_replace_all(school, socialscience_regex, "社科院")
-
-publicAffairs_regex <- "(公|不)[:graph:]+"
-school <- str_replace_all(school, publicAffairs_regex, "公共事務學院")
-
-school <- factor(school)
-
-
-levels(school)
-
-school
+# school
 ```
 

@@ -188,4 +188,23 @@ map(busRoutes, ~.x$nameZh)
 jsonlite::fromJSON("https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=rdec-key-123-45678-011121314&format=JSON") ->
   weather_next36hours
 ```
+2.1 找出有氣象預報資訊的縣市名稱（locationName欄位）
+```{r}
+weather_next36hours$cwbopendata$dataset$location$locationName
+```
+
+2.2 氣象局針對每個縣市提供了不同氣象因子在未來三個時段的預報。每個都市的氣象因子預報有那些，以第一個都市為例，它存在
+```{r}
+map(weather_next36hours$cwbopendata$dataset$location$weatherElement, ~.x$elementName)
+```
+2.3 請抓出每縣市在第一個預告時段的
+
+預告開始時間
+
+預告結束時間
+
+這段時間的最高氣溫
+```{r}
+map(weather_next36hours$cwbopendata$dataset$location$weatherElement[[1]]$time[[1]]$startTime)
+```
 
