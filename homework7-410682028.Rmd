@@ -33,13 +33,21 @@ library(readr); library(stringr); library(purrr); library(magrittr); library(lub
 ### 1.1 單一立方體表面積
 立方體的表面積計算方式為六個面的面積加總，請計算長寬高分別為20,10,15的立方體A的表面積，並將結果存到surface_A(class integer)。
 ```{r ans11}
-# surface_A
+surface_A <- (20*10)*2 + (20*15)*2 +(10*15)*2
+surface_A
 ```
 
 ### 1.2 立方體表面積計算機
 請寫一個叫做surface_cube的function，它的功能是在你輸入長寬高後能自動回傳表面積的值，比如輸入surface_cube(20,10,15)，執行結果應該出現和你1.1計算出來一樣值。
 ```{r ans12}
-# surface_cube
+surface_cube <- function(x,y,z)
+{
+  answer <- (x*y)*2+(x*z)*2+(y*z)*2
+  return(answer)
+}
+
+surface_cube(20,10,15)
+surface_cube
 ```
 
 ## 2 口罩實名制
