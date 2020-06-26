@@ -60,14 +60,34 @@ read_csv("https://www.dropbox.com/s/9xzccsvwrnctzul/mask.csv?dl=1") -> Mask
 請取出Mask裡的第一個身分證字號並用程式判斷他的單雙號，將結果儲存在1st_odd_or_even(class integer,length = 1)。
 單號請用1表示、雙號則用0表示。
 ```{r ans21}
-# `1st_odd_or_even`
+students_numbers <- Mask$身分證字號[[1]]
+first_number_regex <-  "(?<=[:digit:])[0-9]$"
+students_firstnumb <- as.integer(str_extract(students_numbers, first_number_regex))
+`1st_odd_or_even` <- 
+if(students_firstnumb%%2 == 0){
+  print(0)
+}else{
+  print(1)
+}
+`1st_odd_or_even`
 ```
 
 ### 2.2 身分證末碼判斷function
 請寫一個叫做odd_or_even的function，它的功能是在你輸入身分證字號後能自動回傳其末碼屬於單數還是雙數(單雙數表示法同2.1)，比如輸入
 odd_or_even(Mask$身分證字號[[1]])，執行結果應該出現和你2.1計算出來的一樣。
 ```{r ans22}
-# odd_or_even
+odd_or_even <- function(number_Input){
+  first_number_regex <-  "(?<=[:digit:])[0-9]$"
+number_Input <- as.integer(str_extract(number_Input, first_number_regex))
+`1st_odd_or_even` <- 
+if(number_Input%%2 == 0){
+  print(0)
+}else{
+  print(1)
+}
+`1st_odd_or_even`
+}
+odd_or_even
 ```
 
 ### 2.3 口罩實名制1.0—購買口罩日期
@@ -91,6 +111,7 @@ chart[[odd_or_even(Mask$身分證字號[[1]])+1]]
 ```
 這題非常有挑戰性喔!
 ```{r ans23}
+
 # 1st_next_date
 ```
 
@@ -100,6 +121,7 @@ chart[[odd_or_even(Mask$身分證字號[[1]])+1]]
 
 也可以輸入自己或家人朋友的身分證字號玩看看，如果都沒問題的話你就已經能寫出一個時下流行的口罩小app了呢!
 ```{r ans24}
+
 # next_date
 ```
 
@@ -136,6 +158,9 @@ list(
 
 
 ```{r ans31}
+regex_econ1 <- "(經濟系)1"
+pick_1 <- str_extract(as.factor(courseStructure$應修系級), regex_econ1)
+courseStructure$科目名稱
 # get_courses
 ```
 
