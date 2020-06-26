@@ -44,4 +44,41 @@ sampleData[[1]][[1]]
 sampleData[[2]][[1]]
 sampleData[[3]][[1]]
 ```
+###5.4.1 Iteration components
+我們在使用map時寫copy/paste程序3次，目的在確認：
+
+Sequence: 即[[1]], [[2]], [[3]]出現的位置。
+
+Body: 要重覆做的SOP，即~.x[[1]]。
+
+而map最後會把每次Body的執行結果存在：
+
+Output: 每次body執行完要存的形式，即map最後的list class output。
+
+###5.4.2 Two types of sequence
+反覆要做的事
+```{r}
+sampleData[[1]][[1]]  
+sampleData[[2]][[1]] 
+sampleData[[3]][[1]] 
+```
+使用pipe寫法可以清楚分離sequence及body(SOP)。兩種sequence表示：
+
+```{r}
+# 串接寫法(I): external dispatch
+sampleData[[1]] %>% {.[[1]]} 
+sampleData[[2]] %>% {.[[1]]}
+sampleData[[3]] %>% {.[[1]]}
+
+map(sampleData, ~{.x[[1]]})
+
+# 串接寫法(II): internal dispatch
+1 %>% {sampleData[[.]][[1]]}  
+2 %>% {sampleData[[.]][[1]]}  
+3 %>% {sampleData[[.]][[1]]}
+
+map(1:5, ~{sampleData[[.x]][[1]]})
+# map在單維度遞迴時，.x也可以只寫.
+map(1:5, ~{sampleData[[.]][[1]]})
+```
 
