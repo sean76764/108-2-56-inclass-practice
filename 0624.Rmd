@@ -315,4 +315,180 @@ for(.x in {sequence}){
   {body}
 }
 ```
+```{r}
+# 前置作業，接map iteration
+map(1:4, 
+    ~{
+      get_courses(academicYears[[.x]], 
+              allGrades[[.x]], 
+              courseStructure)})
+```
 
+```{r}
+map(1:10,
+    ~toast_withEggHam(toast=toast[[.x]], egg=eggs[[.x]], ham=ham[[.x]]))
+```
+```{r}
+output <- vector("character", 10)
+for(.x in 1:10){
+  toast_withEggHam(toast=toast[[.x]], egg=eggs[[.x]], ham=ham[[.x]]) -> output[[.x]]
+}
+```
+
+##累計型output
+```{r}
+a <- sample(1:100, 10, replace=T)
+print(a)
+```
+
+```{r}
+sum <- 0
+sum <- sum + a[[1]]
+sum <- sum + a[[2]]
+```
+
+```{r}
+sum <- 0
+for(.x in 1:10){
+  sum <- sum+a[[.x]]
+}
+
+print(sum)
+```
+###長度不定型output
+每次抽一個介於0到100的數字（抽出放回）抽10次，但每次必需是3的倍數才留下來。
+```{r}
+output <- c()
+for(.x in 1:10){
+  new <- sample(0:100,1)
+  if(new %% 3==0){
+    output <- c(output, new)
+  }
+}
+
+print(output)
+```
+###next
+有時.x對應元素要附合某些條件才要進行body裡某些處理，不然可「跳過」。
+```{r}
+list(
+  list("student A", c(2,3,4,5)),
+  list("student B", NA), # 沒交作業
+  list("student C", factor(c(2,3,4,5))),
+  list("student D", factor(c(2,3,5)))
+) -> collectionHWs
+
+correctAns <- factor(c(2,3,4,5))
+
+output <- vector("integer",length(collectionHWs))
+nameVector <- vector("character", length(collectionHWs))
+for(.x in seq_along(collectionHWs)){
+  nameVector[[.x]] <- collectionHWs[[.x]][[1]]
+  studentAns <- collectionHWs[[.x]][[2]] 
+  if(is.na(studentAns)){
+    output[[.x]] <- 0
+    next
+  } 
+  
+  # 改題部份
+  if(identical(studentAns, correctAns)){
+    output[[.x]] <- 10
+  } else if (class(studentAns)!=class(correctAns) && identical(as.character(studentAns),as.character(correctAns))) {
+    output[[.x]] <- 5
+  } else {
+    output[[.x]] <- 0
+  }
+}
+names(output) <- nameVector
+
+print(output)
+```
+###5.4.4 while loop
+有時我們面臨sequence長度未知，如擲一銅板直到出現5次正面才停。
+```{r}
+sum <- 0
+for(i in 1:10){
+  newToss <- sample(c("正","反"), 1, replace=T)
+  if(newToss == "正"){
+    sum <- sum+1
+  }
+  print(glue::glue("已擲{i}次得到{sum}次正面"))
+}
+```
+#for loop用很長的sequence再加上條件式break：
+```{r}
+sum <- 0
+for(i in 1:100){
+  newToss <- sample(c("正","反"), 1, replace=T)
+  if(newToss == "正"){
+    sum <- sum+1
+  }
+  print(glue::glue("已擲{i}次得到{sum}次正面"))
+  if(sum==5){
+    break
+  }
+}
+```
+
+break會完全終止迴圈，而之前學到的next是不執行其以下的body直接跳下一個sequence值。
+
+while會一直反覆執行body直到conditionCondition為FALSE: cxzvcz bndc,nm,badh 
+```{r}
+while(continueCondition){
+  body
+}
+```
+```{r}
+sum <- 0
+count <- 0 # 計數器
+while(sum<5){
+  count <- count+1 # 計數器+1
+  newToss <- sample(c("正","反"), 1, replace=T)
+  if(newToss == "正"){
+    sum <- sum+1
+  }
+  print(glue::glue("已擲{count}次得到{sum}次正面"))
+}
+```
+##之前的（有限）迴圈也可以用while寫：
+```{r}
+set.seed(1000) # 控制sample抽出的數字sequence固定，通常進行方法比對用
+
+output <- c()
+for(.x in 1:10){
+  new <- sample(0:100,1)
+  if(new %% 3==0){
+    output <- c(output, new)
+  }
+}
+
+print(output)
+```
+
+```{r}
+set.seed(1000) # 控制sample抽出的數字sequence固定，通常進行方法比對用
+
+count <- 0 # 計數器起始值
+output <- c()
+while(count <= 10){ # 計數上限條件
+  count <- count+1 # 計數器+1
+  new <- sample(0:100,1)
+  if(new %% 3==0){
+    output <- c(output, new)
+  }
+}
+
+print(output)
+```
+
+
+```{r}
+count <- 0 # 計數器起始值
+sum <- 0
+while(count <= 10){ # 計數上限條件
+  count <- count+1 # 計數器+1
+  sum <- sum+a[[count]]
+}
+
+print(sum)
+```
