@@ -82,3 +82,237 @@ map(1:5, ~{sampleData[[.x]][[1]]})
 map(1:5, ~{sampleData[[.]][[1]]})
 ```
 
+
+```{r}
+eggs <- rep("雞蛋x1", 8)
+
+fryEgg <- function(egg){
+  str_replace(egg, "雞蛋", "荷包蛋")
+}
+
+# external dispatch
+eggs[[1]] %>% fryEgg(.)
+eggs[[2]] %>% fryEgg(.)
+eggs[[3]] %>% fryEgg(.)
+
+map(eggs, ~fryEgg(.x)) -> friedEggs1
+
+# internal dispatch
+1 %>% {fryEgg(eggs[[.]])}
+2 %>% {fryEgg(eggs[[.]])}
+3 %>% {fryEgg(eggs[[.]])}
+
+map(1:8, ~{fryEgg(eggs[[.]])}) -> friedEggs2
+```
+###vectorized function
+```{r}
+grade <- c(45, 74, NA)
+
+i<-3
+
+grade_i <- grade[[i]]
+if(!is.na(grade_i)){
+  if(grade_i >= 60){
+    "P"
+  } else if(grade_i < 60 ) {
+    "F"
+  }
+} else {
+  "缺考"
+}
+```
+```{r}
+pass_or_fail <- function(grade_i){
+  if(!is.na(grade_i)){
+    if(grade_i >= 60){
+      "P"
+    } else if(grade_i < 60 ) {
+      "F"
+    }
+  } else {
+    "缺考"
+  }
+}
+
+pass_or_fail(grade[[1]])
+pass_or_fail(grade[[2]])
+pass_or_fail(grade[[3]])
+
+# 可否直接input整個grade vector
+warning("不是vectorised function")
+pass_or_fail(grade)
+```
+```{r}
+grade[[1]] %>% {pass_or_fail(.)}
+grade[[2]] %>% {pass_or_fail(.)}
+grade[[3]] %>% {pass_or_fail(.)}
+
+map(grade, ~{pass_or_fail(.)}) # map to list
+
+map_chr(grade, ~{pass_or_fail(.)}) # map to atom. vectof of class character
+
+map_pass_fail <- function(grade){
+  map_chr(grade, ~{pass_or_fail(.)})
+}
+```
+###Internal dispatching的優勢
+當Body要同時對多個物件同時進行「元素一一處理」時，internal dispatch便顯得便利：
+```{r}
+library(magrittr)
+library(stringr)
+library(purrr)
+eggs <- rep("雞蛋x1",10)
+ham <- rep("火腿x1", 10)
+toast <- rep("土司2片",10)
+
+toast_withEggHam <- function(toast=NULL, egg=NULL, ham=NULL){
+  if(is.null(toast) || !str_detect(toast, "土司")){stop("少了土司")}
+  if(is.null(egg) || !str_detect(egg, "蛋")){stop("少了蛋")}
+  if(is.null(ham) || !str_detect(ham, "火腿")){stop("少了火腿")}
+  "火腿蛋三明治"
+}
+
+# 土司、火腿、蛋 第一份出列
+1 %>% {toast_withEggHam(toast=toast[[.]], egg=eggs[[.]], ham=ham[[.]])}
+# 土司、火腿、蛋 第二份出列
+2 %>% {toast_withEggHam(toast=toast[[.]], egg=eggs[[.]], ham=ham[[.]])}
+# 土司、火腿、蛋 第三份出列
+3 %>% {toast_withEggHam(toast=toast[[.]], egg=eggs[[.]], ham=ham[[.]])}
+
+
+map(1:10,
+    ~toast_withEggHam(toast=toast[[.x]], egg=eggs[[.x]], ham=ham[[.x]]))
+```
+###各系課程規劃
+執行以下程序可以得到臺北大學100-107學年的開課資料courseStructure：
+```{r}
+jsonlite::fromJSON("https://www.dropbox.com/s/7myzzdnoor21hye/courseStructure2.json?dl=1") -> courseStructure
+```
+```{r}
+entranceYear <- 100
+major <- "經濟系"
+allGrades <- paste0(major, 1:4)
+academicYears <- entranceYear+0:3
+
+# 100學年 1年級
+acadYear_i <- academicYears[[1]]
+grade_i <- allGrades[[1]]
+pick <-
+  (courseStructure$學年==acadYear_i 
+    &
+    str_detect(courseStructure$應修系級, grade_i))
+unique(courseStructure$科目名稱[pick])
+
+# 101學年 2年級
+acadYear_i <- academicYears[[2]]
+grade_i <- allGrades[[2]]
+pick <-
+  (courseStructure$學年==acadYear_i 
+    &
+    str_detect(courseStructure$應修系級, grade_i))
+unique(courseStructure$科目名稱[pick])
+
+# 102學年 3年級
+acadYear_i <- academicYears[[3]]
+grade_i <- allGrades[[3]]
+pick <-
+  (courseStructure$學年==acadYear_i 
+    &
+    str_detect(courseStructure$應修系級, grade_i))
+unique(courseStructure$科目名稱[pick])
+
+# 103學年 4年級
+acadYear_i <- academicYears[[4]]
+grade_i <- allGrades[[4]]
+pick <-
+  (courseStructure$學年==acadYear_i 
+    &
+    str_detect(courseStructure$應修系級, grade_i))
+unique(courseStructure$科目名稱[pick])
+```
+100學年1年級-103學年4年級，有哪幾行是一模一樣的？
+```{r}
+pick <-
+  (courseStructure$學年==acadYear_i 
+    &
+    str_detect(courseStructure$應修系級, grade_i))
+unique(courseStructure$科目名稱[pick])
+```
+以上的SOP要能運作，哪些物件要存在執行環境？
+
+courseStructure, acadYear_i, grade_i
+
+```{r}
+get_courses <- function(acadYear_i, grade_i, courseStructure){
+  pick <-
+  (courseStructure$學年==acadYear_i 
+    &
+    str_detect(courseStructure$應修系級, grade_i))
+  
+  return(
+    unique(courseStructure$科目名稱[pick])
+  )
+}
+```
+#重寫100學年1年級-103學年4年級
+```{r}
+# 100學年 1年級
+acadYear_i <- academicYears[[1]]
+grade_i <- allGrades[[1]]
+get_courses(acadYear_i, grade_i, courseStructure)
+
+# 101學年 2年級
+acadYear_i <- academicYears[[2]]
+grade_i <- allGrades[[2]]
+get_courses(acadYear_i, grade_i, courseStructure)
+
+# 102學年 3年級
+acadYear_i <- academicYears[[3]]
+grade_i <- allGrades[[3]]
+get_courses(acadYear_i, grade_i, courseStructure)
+
+# 103學年 4年級
+acadYear_i <- academicYears[[4]]
+grade_i <- allGrades[[4]]
+get_courses(acadYear_i, grade_i, courseStructure)
+```
+###濃縮
+```{r}
+# 100學年 1年級
+get_courses(academicYears[[1]], allGrades[[1]], courseStructure)
+
+# 101學年 2年級
+get_courses(academicYears[[2]], allGrades[[2]], courseStructure)
+
+# 102學年 3年級
+get_courses(academicYears[[3]], allGrades[[3]], courseStructure)
+
+# 103學年 4年級
+get_courses(academicYears[[4]], allGrades[[4]], courseStructure)
+```
+###使用pipe
+```{r}
+1 %>% 
+  {get_courses(academicYears[[.]], allGrades[[.]], courseStructure)}
+2 %>% 
+  {get_courses(academicYears[[.]], allGrades[[.]], courseStructure)}
+3 %>% 
+  {get_courses(academicYears[[.]], allGrades[[.]], courseStructure)}
+4 %>% 
+  {get_courses(academicYears[[.]], allGrades[[.]], courseStructure)}
+```
+###使用map
+```{r}
+1:4 %>%
+  map(~{get_courses(academicYears[[.]], allGrades[[.]], courseStructure)})
+```
+
+
+##5.4.3 for loop
+```{r}
+output <- vector("{type}", length={len})
+for(.x in {sequence}){
+  {body}
+}
+```
+
